@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import AdminSidebar from '@/components/AdminSidebar';
 import { ToastProvider } from '@/components/Toast';
@@ -12,6 +13,38 @@ export default function AdminLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Check authentication
+  useEffect(() => {
+    const checkAuth = async () => {
+      // Don't check auth on login page
+      if (pathname === '/admin/login') {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/auth/check');
+        const data = await response.json();
+        
+        if (data.authenticated) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          router.push('/admin/login');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        setIsAuthenticated(false);
+        router.push('/admin/login');
+      }
+    };
+
+    checkAuth();
+  }, [pathname, router]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -21,6 +54,31 @@ export default function AdminLayout({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Show loading or login page
+  if (isAuthenticated === null) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        backgroundColor: '#f0f2f5'
+      }}>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // If on login page, just show children
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
+  // If not authenticated, show nothing (redirecting)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <ToastProvider>

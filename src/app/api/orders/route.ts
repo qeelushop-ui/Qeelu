@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
+import { ensureDatabaseInitialized } from '@/lib/auto-init';
 
 export const dynamic = 'force-dynamic';
 
 // GET all orders
 export async function GET() {
   try {
+    // Auto-initialize database on first use (only runs once)
+    await ensureDatabaseInitialized().catch(err => {
+      console.error('Auto-init warning:', err);
+    });
     const rows = await sql`
       SELECT 
         id,
@@ -51,6 +56,10 @@ export async function GET() {
 // POST - Create new order
 export async function POST(request: NextRequest) {
   try {
+    // Auto-initialize database on first use (only runs once)
+    await ensureDatabaseInitialized().catch(err => {
+      console.error('Auto-init warning:', err);
+    });
     const body = await request.json();
     const {
       id,
@@ -124,6 +133,10 @@ export async function POST(request: NextRequest) {
 // PUT - Update order
 export async function PUT(request: NextRequest) {
   try {
+    // Auto-initialize database on first use (only runs once)
+    await ensureDatabaseInitialized().catch(err => {
+      console.error('Auto-init warning:', err);
+    });
     const body = await request.json();
     const {
       id,
@@ -189,6 +202,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete order
 export async function DELETE(request: NextRequest) {
   try {
+    // Auto-initialize database on first use (only runs once)
+    await ensureDatabaseInitialized().catch(err => {
+      console.error('Auto-init warning:', err);
+    });
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

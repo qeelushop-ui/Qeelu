@@ -426,6 +426,35 @@ function AdminSidebarContent({ isOpen, onClose, isMobile = false }: AdminSidebar
                 <span>{t('admin.menu.unsubmitted', { defaultValue: 'Unsubmitted Orders' })}</span>
               </Link>
             </li>
+
+            {/* Profile */}
+            <li>
+              <Link
+                href="/admin/profile"
+                onClick={isMobile ? onClose : undefined}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  color: pathname === '/admin/profile' ? '#fff' : 'rgba(255,255,255,0.7)',
+                  backgroundColor: pathname === '/admin/profile' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                  border: 'none',
+                  borderLeft: pathname === '/admin/profile' ? '3px solid #2196F3' : '3px solid transparent',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: pathname === '/admin/profile' ? '500' : '400',
+                  transition: 'all 0.2s ease',
+                }}
+                className={pathname === '/admin/profile' ? '' : 'hover:bg-white/5 hover:text-white'}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: pathname === '/admin/profile' ? 1 : 0.7 }}>
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>{t('admin.menu.profile', { defaultValue: 'Profile' })}</span>
+              </Link>
+            </li>
           </ul>
         </nav>
 
