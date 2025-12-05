@@ -10,8 +10,6 @@ import { cities, getCityName } from '@/data/products';
 import Image from 'next/image';
 import * as XLSX from 'xlsx';
 
-
-
 type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 const statusConfig: Record<OrderStatus, { color: string; bgColor: string; icon: string }> = {
