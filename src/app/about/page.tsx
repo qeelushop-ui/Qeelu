@@ -2,8 +2,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'About Us - Mega Deals Oman',
-  description: 'Learn about Mega Deals Oman - Your trusted source for genuine products with great deals.',
+  title: 'About Us - Qeelu Oman',
+  description: 'Learn about Qeelu Oman - Your trusted source for genuine products with great deals.',
 };
 
 export default function AboutPage() {
