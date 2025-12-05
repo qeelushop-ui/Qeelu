@@ -20,9 +20,14 @@ export const metadata: Metadata = {
   description: "Qeelu is Oman's trusted online store offering smartphones, tablets, watches, accessories, and more with free delivery and cash on delivery. Shop premium products at best prices in Oman.",
   keywords: "Qeelu Oman, Qeelu Online Shopping, Oman Online Store, Electronics Oman, Smartwatches Oman, Tablets Oman, Free delivery Oman, Cash on delivery Oman, Best deals Oman, Mobile accessories Oman, iPads Oman, Gadgets Oman",
   icons: {
-    icon: '/Qeelu-white.png',
+    icon: [
+      { url: '/Qeelu-white.png', sizes: '32x32', type: 'image/png' },
+      { url: '/Qeelu-white.png', sizes: '16x16', type: 'image/png' },
+    ],
     shortcut: '/Qeelu-white.png',
-    apple: '/Qeelu-white.png',
+    apple: [
+      { url: '/Qeelu-white.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
   openGraph: {
     title: "Qeelu Oman - Online Shopping with Free Delivery",

@@ -98,7 +98,7 @@ export default function Header() {
               alt="Qeelu Logo"
               width={220}
               height={90}
-              style={{ width: 'auto', height: '75px' }}
+              style={{ width: 'auto', height: '90px' }}
               priority
             />
           </Link>
