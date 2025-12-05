@@ -1,0 +1,504 @@
+{
+  "navbar": {
+    "arabic": "عربي",
+    "english": "English"
+  },
+  "search": {
+    "placeholder": "Search products..."
+  },
+  "categories": {
+    "all": "All",
+    "cosmetics": "Cosmetics",
+    "electronics": "Electronics",
+    "watches": "Watches",
+    "mobile": "Mobile",
+    "kitchen": "Kitchen",
+    "car": "Car",
+    "other": "Other"
+  },
+  "product": {
+    "freeDelivery": "Free Delivery",
+    "off": "OFF",
+    "itemsSold": "Items Sold",
+    "description": "Description"
+  },
+  "orderForm": {
+    "orderNow": "Order Now",
+    "formMessage": "Kindly fill the form & we will deliver 1-2 working days.",
+    "fullName": "Full Name",
+    "mobile": "Mobile",
+    "quantity": "Quantity",
+    "city": "City",
+    "deliveryAddress": "Delivery Address",
+    "selectCity": "Select City",
+    "addressPlaceholder": "Delivery Address* (Building No, Street name, Area)",
+    "submitOrder": "SUBMIT ORDER",
+    "piece": "Piece",
+    "pieces": "Pieces"
+  },
+  "products": {
+    "1": {
+      "title": "Original Waterproof Turbo Shaver 60 days of Use - Buy 1 Get 1 Free",
+      "description": "Premium Quality Turbo Shaver",
+      "features": [
+        "Waterproof design for wet and dry use",
+        "60 days battery life on single charge",
+        "Sharp stainless steel blades for smooth shave",
+        "Ergonomic grip for comfortable handling",
+        "USB rechargeable - no need for batteries",
+        "Travel lock feature for safety",
+        "Buy 1 Get 1 Free offer included"
+      ]
+    },
+    "2": {
+      "title": "Jet Mavic Camera HD 4k Drone",
+      "description": "Professional 4K Camera Drone",
+      "features": [
+        "4K HD camera for stunning aerial photography",
+        "Stable flight with 6-axis gyroscope",
+        "One key takeoff and landing",
+        "Headless mode for easy control",
+        "360° flip stunts capability",
+        "15 minutes flight time",
+        "2.4GHz remote control with 100m range"
+      ]
+    },
+    "3": {
+      "title": "2 in 1 Portable 800A Jump Starter & Air Pump",
+      "description": "Emergency Car Jump Starter with Air Compressor",
+      "features": [
+        "800A peak current for most vehicles",
+        "Built-in air compressor for tire inflation",
+        "12000mAh power bank function",
+        "LED flashlight with SOS mode",
+        "Digital display for pressure reading",
+        "USB ports for device charging",
+        "Compact and portable design"
+      ]
+    },
+    "4": {
+      "title": "Anti-Itching & Dandruff Removing Scalp Care Shampoo",
+      "description": "Natural Anti-Dandruff Treatment Shampoo",
+      "features": [
+        "Removes dandruff effectively from first wash",
+        "Soothes itchy and irritated scalp",
+        "Natural herbal ingredients",
+        "Strengthens hair roots",
+        "Suitable for all hair types",
+        "Gentle formula for daily use",
+        "Fresh mint fragrance"
+      ]
+    },
+    "5": {
+      "title": "48V Electric Paint Spray Gun",
+      "description": "Professional Electric Paint Sprayer",
+      "features": [
+        "48V powerful motor for smooth spraying",
+        "Adjustable spray patterns",
+        "800ml large capacity container",
+        "Suitable for walls, furniture, and cars",
+        "Easy to clean and maintain",
+        "Lightweight ergonomic design",
+        "Includes multiple nozzle sizes"
+      ]
+    },
+    "6": {
+      "title": "Latest Dual Sim i17 Pro with HD Camera",
+      "description": "Compact Dual SIM Feature Phone",
+      "features": [
+        "Dual SIM dual standby support",
+        "HD camera for photos and videos",
+        "Long lasting battery life",
+        "Compact flip design",
+        "Large buttons for easy dialing",
+        "FM Radio and MP3 player",
+        "Bluetooth connectivity"
+      ]
+    },
+    "7": {
+      "title": "Men Therm Bee Venom Gynecomastia Heating Oil",
+      "description": "Natural Heating Massage Oil for Men",
+      "features": [
+        "Natural bee venom extract formula",
+        "Heating effect for better absorption",
+        "Helps reduce chest fat",
+        "Improves skin firmness",
+        "Easy to apply and fast absorbing",
+        "No artificial chemicals",
+        "Visible results in weeks"
+      ]
+    },
+    "8": {
+      "title": "Neck Shoulder & Back Massager with Heat",
+      "description": "Electric Shiatsu Massage Pillow",
+      "features": [
+        "Deep kneading shiatsu massage",
+        "Built-in heating function",
+        "8 massage nodes for full coverage",
+        "Bi-directional rotation",
+        "Auto shut-off for safety",
+        "Portable design - use anywhere",
+        "Rechargeable battery included"
+      ]
+    },
+    "9": {
+      "title": "USB Rechargeable Lighter Watch",
+      "description": "2-in-1 Watch with Built-in Lighter",
+      "features": [
+        "Stylish analog watch design",
+        "Built-in flameless USB lighter",
+        "USB rechargeable - no fuel needed",
+        "Windproof electronic ignition",
+        "Durable metal construction",
+        "Water resistant watch face",
+        "Perfect gift for smokers"
+      ]
+    },
+    "10": {
+      "title": "G9 Ultra Max Gold Smart Watch",
+      "description": "Premium Smart Watch with Health Features",
+      "features": [
+        "Large HD touch display",
+        "Heart rate and SpO2 monitoring",
+        "Sleep tracking and analysis",
+        "Multiple sport modes",
+        "Call and message notifications",
+        "7 days battery life",
+        "IP68 waterproof rating"
+      ]
+    },
+    "11": {
+      "title": "Classic Style Unisex Alloy Stainless Steel Wrist Watch R1",
+      "description": "Elegant Stainless Steel Quartz Watch",
+      "features": [
+        "Premium stainless steel construction",
+        "Japanese quartz movement",
+        "Scratch resistant mineral glass",
+        "Unisex design for all",
+        "Water resistant to 30m",
+        "Luminous hands for night reading",
+        "Adjustable steel bracelet"
+      ]
+    },
+    "12": {
+      "title": "Luxury IIK Men's Stainless Steel Watch R3",
+      "description": "Luxury Business Watch for Men",
+      "features": [
+        "Elegant business style design",
+        "High quality stainless steel band",
+        "Precise quartz movement",
+        "Date display function",
+        "30M water resistance",
+        "Fold-over clasp with safety",
+        "Perfect for formal occasions"
+      ]
+    },
+    "13": {
+      "title": "Portable USB Charging Powerful Electric Citrus Juicer",
+      "description": "Portable Electric Citrus Juicer",
+      "features": [
+        "USB rechargeable for portability",
+        "Powerful motor for quick juicing",
+        "400ml large capacity",
+        "One button operation",
+        "Easy to clean - detachable parts",
+        "BPA-free food grade materials",
+        "Perfect for oranges, lemons, limes"
+      ]
+    },
+    "14": {
+      "title": "High Quality 3 Tier Metal Sink Rack With Lid For Kitchen",
+      "description": "3-Tier Kitchen Sink Organizer Rack",
+      "features": [
+        "3-tier design for maximum storage",
+        "Premium metal construction",
+        "Rust-proof coating",
+        "Includes lid for top shelf",
+        "Adjustable height shelves",
+        "Easy assembly - no tools needed",
+        "Space saving design"
+      ]
+    },
+    "15": {
+      "title": "Portable Car Wash Gun 2023",
+      "description": "High Pressure Portable Car Washer",
+      "features": [
+        "High pressure water spray",
+        "Adjustable spray patterns",
+        "Fits standard garden hose",
+        "Built-in soap dispenser",
+        "Ergonomic grip handle",
+        "Durable ABS construction",
+        "Perfect for cars, bikes, gardens"
+      ]
+    },
+    "16": {
+      "title": "RC Airplane, 2.4GHz Remote Controlled",
+      "description": "Remote Control Glider Airplane",
+      "features": [
+        "2.4GHz remote for stable control",
+        "Lightweight foam construction",
+        "Easy to fly for beginners",
+        "150m control range",
+        "USB rechargeable battery",
+        "Crash resistant material",
+        "Ready to fly out of box"
+      ]
+    },
+    "17": {
+      "title": "Wall Mounted Smart Air Conditioner & Heater",
+      "description": "Portable Wall Mount AC & Heater",
+      "features": [
+        "Dual function - cooling and heating",
+        "Wall mounted space-saving design",
+        "Remote control included",
+        "Timer function up to 12 hours",
+        "Adjustable temperature settings",
+        "Low noise operation",
+        "Energy efficient"
+      ]
+    },
+    "18": {
+      "title": "New 5 In 1 Hair Air Wrap Styler",
+      "description": "Professional 5-in-1 Hair Styling Set",
+      "features": [
+        "5 interchangeable styling heads",
+        "Automatic curling technology",
+        "Multiple heat settings",
+        "Ionic technology for shine",
+        "Suitable for all hair types",
+        "Cool tip for safe handling",
+        "Storage case included"
+      ]
+    },
+    "19": {
+      "title": "Smart Watch Pro with Fitness Tracker",
+      "description": "Advanced Smart Watch with Health Monitoring",
+      "features": [
+        "Heart rate and blood pressure monitoring",
+        "Step counter and calorie tracker",
+        "Sleep quality analysis",
+        "Water resistant up to 50m",
+        "7 days battery life",
+        "Bluetooth connectivity",
+        "Multiple sport modes"
+      ]
+    },
+    "20": {
+      "title": "Professional Kitchen Blender 1500W",
+      "description": "High Power Kitchen Blender for Smoothies",
+      "features": [
+        "1500W powerful motor",
+        "Stainless steel blades",
+        "2L large capacity jug",
+        "Multiple speed settings",
+        "Pulse function",
+        "Easy to clean design",
+        "Safety lock mechanism"
+      ]
+    },
+    "21": {
+      "title": "4K Ultra HD Car Dash Camera",
+      "description": "Professional Car Dash Camera with Night Vision",
+      "features": [
+        "4K Ultra HD recording",
+        "Night vision technology",
+        "Loop recording function",
+        "G-sensor for accident detection",
+        "Wide angle 170° lens",
+        "Parking mode with motion detection",
+        "GPS tracking included"
+      ]
+    }
+  },
+  "footer": {
+    "usefulLinks": "USEFUL LINKS",
+    "aboutUs": "About Us",
+    "unclaimableProducts": "Un-Claimable Products",
+    "whyUs": "Why Us?",
+    "allRightsReserved": "All Rights Reserved"
+  },
+  "admin": {
+    "panel": "Admin Panel",
+    "welcomeMessage": "Welcome to your admin dashboard",
+    "products": "Products",
+    "manageProducts": "Manage all products",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "searchProducts": "Search products...",
+    "recentProducts": "Recent Products",
+    "viewAll": "View All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "add": "Add",
+    "noProducts": "No products found",
+    "backToStore": "Back to Store",
+    "deleteConfirm": "Delete this product?",
+    "menu": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "unsubmitted": "Unsubmitted Orders",
+      "categories": "Categories",
+      "settings": "Settings"
+    },
+    "unsubmitted": {
+      "title": "Unsubmitted Orders",
+      "description": "Orders that were started but not completed",
+      "noOrders": "No unsubmitted orders found",
+      "id": "ID",
+      "name": "Name",
+      "phone": "Phone",
+      "city": "City",
+      "quantity": "Quantity",
+      "date": "Date",
+      "address": "Address",
+      "actions": "Actions",
+      "view": "View",
+      "delete": "Delete",
+      "status": "Unsubmitted",
+      "orderDetails": "Unsubmitted Order Details",
+      "customerInfo": "Customer Information",
+      "createdAt": "Created At",
+      "confirmDelete": "Delete Unsubmitted Order?",
+      "confirmDeleteMessage": "This action cannot be undone."
+    },
+    "stats": {
+      "products": "Total Products",
+      "activeProducts": "Active",
+      "inactiveProducts": "Inactive",
+      "categories": "Categories",
+      "revenue": "Total Value",
+      "discount": "Avg Discount"
+    },
+    "table": {
+      "product": "Product",
+      "category": "Category",
+      "price": "Price",
+      "originalPrice": "Original Price",
+      "currentPrice": "Current Price",
+      "discount": "Discount",
+      "sold": "Sold",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "Enter product title...",
+      "category": "Category",
+      "status": "Status",
+      "originalPrice": "Original Price",
+      "currentPrice": "Current Price",
+      "discount": "Discount",
+      "imageUrl": "Image URL",
+      "description": "Description",
+      "descriptionPlaceholder": "Enter product description...",
+      "freeDelivery": "Free Delivery",
+      "freeDeliveryDesc": "Enable free delivery for this product",
+      "active": "Active",
+      "addDescription": "Fill in the product details below",
+      "editDescription": "Update the product information",
+      "addFeature": "Add Feature",
+      "featurePlaceholder": "Enter feature description...",
+      "featuresList": "Features List",
+      "noFeatures": "No features added yet",
+      "featuresOptional": "Add product features (optional). You can skip this step.",
+      "preview": "Preview",
+      "noImage": "No image URL provided",
+      "mainImage": "Main Image",
+      "additionalImages": "Additional Images",
+      "optional": "Optional",
+      "imageUrlPlaceholder": "Enter image URL...",
+      "step": "Step",
+      "of": "of",
+      "errors": {
+        "titleRequired": "Product title is required",
+        "priceRequired": "Price must be greater than 0",
+        "mainImageRequired": "Main image URL is required"
+      },
+      "tab": {
+        "basic": "Basic Info",
+        "features": "Features",
+        "images": "Images"
+      }
+    },
+    "back": "Back",
+    "next": "Next",
+    "dashboard": {
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "pendingOrders": "Pending Orders",
+      "totalProducts": "Total Products",
+      "fromOrders": "From {{count}} completed orders",
+      "todayOrders": "Today",
+      "needsAttention": "Needs attention",
+      "activeProducts": "{{count}} active products",
+      "orderStatus": "Order Status Overview",
+      "recentOrders": "Recent Orders",
+      "avgOrderValue": "Avg Order",
+      "pendingAmount": "Pending Amount",
+      "inProgressAmount": "In Progress",
+      "completedAmount": "Completed Amount",
+      "cancelledAmount": "Cancelled",
+      "pendingOrdersCount": "{{count}} orders waiting",
+      "inProgressOrdersCount": "{{count}} orders in progress",
+      "completedOrdersCount": "{{count}} orders delivered",
+      "cancelledOrdersCount": "{{count}} orders cancelled"
+    },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "Manage and track all customer orders",
+      "all": "All",
+      "searchPlaceholder": "Search by order ID, customer name...",
+      "noOrders": "No orders found",
+      "view": "View",
+      "orderDetails": "Order Details",
+      "status": "Status",
+      "customerInfo": "Customer Information",
+      "deliveryAddress": "Delivery Address",
+      "products": "Products",
+      "total": "Total",
+      "updateStatus": "Update Status",
+      "save": "Save",
+      "delete": "Delete",
+      "deleteConfirm": "Are you sure you want to delete this order? This action cannot be undone.",
+      "cancelledOrderNote": "This order has been cancelled and cannot be updated",
+      "stats": {
+        "total": "Total Orders",
+        "revenue": "Revenue"
+      },
+      "statuses": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "table": {
+        "orderId": "Order ID",
+        "customer": "Customer",
+        "products": "Products",
+        "total": "Total",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "export": {
+        "selected": "Export Selected",
+        "all": "Export All",
+        "noOrdersSelected": "Please select orders to export"
+      },
+      "selectAll": "Select All",
+      "edit": "Edit",
+      "editOrder": "Edit Order",
+      "customerName": "Customer Name",
+      "phone": "Phone Number",
+      "city": "City",
+      "address": "Address"
+    }
+  }
+}
