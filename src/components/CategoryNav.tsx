@@ -8,7 +8,7 @@ import {
   BiTime,
   BiPhone,
   BiDish,
-  BiCar,
+  BiShoppingBag,
   BiBox,
   BiGridAlt
 } from 'react-icons/bi';
@@ -26,11 +26,11 @@ const categoryIcons: Record<string, any> = {
   'watches': BiTime,
   'mobile': BiPhone,
   'kitchen': BiDish,
-  'car': BiCar,
+  'ladiesbag': BiShoppingBag,
   'other': BiBox,
 };
 
-const categoryIds = ['all', 'cosmetics', 'electronics', 'watches', 'mobile', 'kitchen', 'car', 'other'];
+const categoryIds = ['all', 'cosmetics', 'electronics', 'watches', 'mobile', 'kitchen', 'ladiesbag', 'other'];
 
 export default function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavProps) {
   const [mounted, setMounted] = useState(false);

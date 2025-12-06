@@ -10,7 +10,7 @@ import {
   BiTime,
   BiPhone,
   BiDish,
-  BiCar,
+  BiShoppingBag,
   BiBox,
   BiTimeFive,
   BiCog,
@@ -26,7 +26,7 @@ const categoryItems = [
   { id: 'watches', icon: BiTime },
   { id: 'mobile', icon: BiPhone },
   { id: 'kitchen', icon: BiDish },
-  { id: 'car', icon: BiCar },
+  { id: 'ladiesbag', icon: BiShoppingBag },
   { id: 'other', icon: BiBox },
 ];
 

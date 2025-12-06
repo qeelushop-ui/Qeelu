@@ -273,7 +273,7 @@ function ProductModal({ isOpen, onClose, product, onSave, t }: ProductModalProps
         status: formData.status,
         image: uploadedImages.main,
         images: allImages,
-        soldCount: product?.soldCount || 0,
+        soldCount: product?.soldCount || Math.floor(Math.random() * 2801) + 200, // Random 200-3000 for new products
       };
       
       // Add title and description - preserve existing if editing, or prepare for translation

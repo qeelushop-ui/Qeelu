@@ -202,7 +202,7 @@ const rawProducts = [
     ],
     freeDelivery: true,
     soldCount: 8392,
-    category: "car",
+    category: "ladiesbag",
     description: "Emergency Car Jump Starter with Air Compressor",
     features: [
       "800A peak current for most vehicles",
@@ -538,7 +538,7 @@ const rawProducts = [
     ],
     freeDelivery: true,
     soldCount: 6293,
-    category: "car",
+    category: "ladiesbag",
     description: "High Pressure Portable Car Washer",
     features: [
       "High pressure water spray",
@@ -706,7 +706,7 @@ const rawProducts = [
     ],
     freeDelivery: true,
     soldCount: 4567,
-    category: "car",
+    category: "ladiesbag",
     description: "Professional Car Dash Camera with Night Vision",
     features: [
       "4K Ultra HD recording",
@@ -731,7 +731,7 @@ export const categories = [
   { id: 'watches', name: 'Watches' },
   { id: 'mobile', name: 'Mobile' },
   { id: 'kitchen', name: 'Kitchen' },
-  { id: 'car', name: 'Car' },
+  { id: 'ladiesbag', name: 'Ladies Bag' },
   { id: 'other', name: 'Other' },
 ];
 

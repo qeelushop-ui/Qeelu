@@ -738,7 +738,7 @@ function AdminOrdersContent() {
   const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(null);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 100;
+  const [ordersPerPage, setOrdersPerPage] = useState(25);
 
   // Use URL param as source of truth
   const filterStatus = statusParam || 'all';
@@ -758,6 +758,12 @@ function AdminOrdersContent() {
       params.delete('status');
     }
     router.push(`/admin/orders?${params.toString()}`);
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (value: number) => {
+    setOrdersPerPage(value);
+    setCurrentPage(1); // Reset to page 1 when changing items per page
   };
 
   // Get stats from context
@@ -1334,6 +1340,41 @@ function AdminOrdersContent() {
                 backgroundColor: '#f8f9fa',
               }}
             />
+          </div>
+
+          {/* Items Per Page Selector */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <label style={{ fontSize: '13px', fontWeight: '600', color: '#666', whiteSpace: 'nowrap' }}>
+              Items per page:
+            </label>
+            <select
+              value={ordersPerPage}
+              onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+              style={{
+                padding: '10px 14px',
+                paddingRight: '36px',
+                borderRadius: '10px',
+                border: '1.5px solid #e0e0e0',
+                backgroundColor: '#fff',
+                color: '#1a1a2e',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                outline: 'none',
+                transition: 'all 0.2s ease',
+                appearance: 'none',
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 12px center',
+              }}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={75}>75</option>
+              <option value={100}>100</option>
+            </select>
           </div>
 
           {/* Status Filter */}
@@ -2058,7 +2099,7 @@ function AdminOrdersContent() {
         )}
 
         {/* Pagination */}
-        {totalPages > 1 && (
+        {filteredOrders.length > 0 && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -2184,7 +2225,7 @@ function AdminOrdersContent() {
               fontWeight: '500',
               whiteSpace: 'nowrap',
             }}>
-              Page {currentPage} of {totalPages} • {filteredOrders.length} orders
+              Page {currentPage} of {totalPages} • Showing {startIndex + 1}-{Math.min(endIndex, filteredOrders.length)} of {filteredOrders.length} orders
             </div>
           </div>
         )}

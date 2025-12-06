@@ -84,7 +84,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
       image: productData.image || '',
       images: productData.images || [productData.image || ''],
       freeDelivery: productData.freeDelivery || false,
-      soldCount: productData.soldCount || Math.floor(Math.random() * 900) + 100, // Random 100-999
+      soldCount: productData.soldCount || Math.floor(Math.random() * 2801) + 200, // Random 200-3000
       category: productData.category || 'other',
       features: featuresEn.length > 0 
         ? { 

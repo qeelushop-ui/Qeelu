@@ -8,40 +8,24 @@ import { Product } from '@/data/products';
 import { getProductTitle } from './getProductText';
 
 /**
- * Calculate actual sold count for a product from orders
- * Only counts orders that are not cancelled
+ * Get sold count for a product
+ * Uses product's soldCount field (random 200-3000 for new products)
+ * If soldCount is 0 or missing, generates a random number between 200-3000
  */
 export function getSoldCount(product: Product, orders: Order[]): number {
-  if (!product || !orders || orders.length === 0) {
+  if (!product) {
     return 0;
   }
 
-  // Get product titles in both languages
-  const productTitleEn = getProductTitle(product, 'en');
-  const productTitleAr = getProductTitle(product, 'ar');
+  // Use product's soldCount if it exists and is greater than 0
+  if (product.soldCount && product.soldCount > 0) {
+    return product.soldCount;
+  }
 
-  // Count sold items from non-cancelled orders
-  let soldCount = 0;
-
-  orders.forEach(order => {
-    // Skip cancelled orders
-    if (order.status === 'cancelled') {
-      return;
-    }
-
-    order.products.forEach(orderProduct => {
-      // Match by product name (could be in English or Arabic depending on language when order was placed)
-      if (
-        orderProduct.name === productTitleEn ||
-        orderProduct.name === productTitleAr ||
-        orderProduct.name.trim() === productTitleEn.trim() ||
-        orderProduct.name.trim() === productTitleAr.trim()
-      ) {
-        soldCount += orderProduct.quantity;
-      }
-    });
-  });
-
-  return soldCount;
+  // Generate a random number between 200-3000 for products without soldCount
+  // Use product ID as seed for consistent random number per product
+  const seed = typeof product.id === 'number' ? product.id : parseInt(String(product.id).replace('.', '')) || 0;
+  const random = ((seed * 9301 + 49297) % 233280) / 233280; // Simple seeded random
+  return Math.floor(random * 2801) + 200; // Random 200-3000
 }
 
