@@ -803,15 +803,26 @@ function AdminOrdersContent() {
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = () => {
+    const handleClickOutside = (e: MouseEvent) => {
       if (openStatusDropdown) {
         setOpenStatusDropdown(null);
       }
+      // Close export and print dropdowns
+      const target = e.target as HTMLElement;
+      const exportContainer = document.getElementById('export-dropdown-container');
+      const printContainer = document.getElementById('print-dropdown-container');
+      
+      if (exportContainer && !exportContainer.contains(target)) {
+        const exportDropdown = document.getElementById('export-dropdown');
+        if (exportDropdown) exportDropdown.style.display = 'none';
+      }
+      if (printContainer && !printContainer.contains(target)) {
+        const printDropdown = document.getElementById('print-dropdown');
+        if (printDropdown) printDropdown.style.display = 'none';
+      }
     };
-    if (openStatusDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, [openStatusDropdown]);
 
   const handleViewOrder = (order: Order) => {
@@ -971,6 +982,163 @@ function AdminOrdersContent() {
     exportToExcel(filteredOrders);
   };
 
+  // Print orders function
+  const printOrders = (ordersToPrint: Order[], pageSize: 'A4' | 'A5' = 'A4') => {
+    if (ordersToPrint.length === 0) {
+      showToast('No orders selected to print', 'error');
+      return;
+    }
+
+    // Create a print-friendly HTML content
+      const printContent = ordersToPrint.map((order, index) => {
+      const productsList = order.products.map(p => 
+        `${p.name} (Qty: ${p.quantity}, Price: ${p.price.toFixed(2)} OMR)`
+      ).join('<br>');
+
+      return `
+        <div class="order-page" style="page-break-after: ${index < ordersToPrint.length - 1 ? 'always' : 'auto'}; padding: ${pageSize === 'A5' ? '15px' : '20px'}; border: 1px solid #ddd; margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; font-family: Arial, sans-serif;">
+          <!-- Header with Logo and Barcode -->
+          <div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; border-bottom: 2px solid #000; padding-bottom: ${pageSize === 'A5' ? '10px' : '15px'};">
+            <div style="flex: 1;">
+              <div style="font-size: ${pageSize === 'A5' ? '18px' : '24px'}; font-weight: bold; margin-bottom: 5px;">Qeelu Store</div>
+              <div style="font-size: ${pageSize === 'A5' ? '10px' : '12px'}; color: #666;">SIMPLIFIED TAX INVOICE</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: ${pageSize === 'A5' ? '14px' : '18px'}; font-weight: bold; margin-bottom: 5px;">Order #${order.id}</div>
+              <div style="font-size: ${pageSize === 'A5' ? '10px' : '12px'}; color: #666;">Date: ${order.date} ${order.time}</div>
+            </div>
+          </div>
+
+          <!-- Receiver's Address -->
+          <div class="address-section" style="margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; padding: ${pageSize === 'A5' ? '10px' : '15px'}; background-color: #f9f9f9; border-left: 3px solid #4CAF50;">
+            <div style="font-weight: bold; margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'}; font-size: ${pageSize === 'A5' ? '12px' : '14px'};">To : RECEIVER'S ADDRESS</div>
+            <div style="font-size: ${pageSize === 'A5' ? '11px' : '13px'}; line-height: 1.6;">
+              <strong>${order.customer}</strong><br>
+              ${order.address}<br>
+              ${order.city}, OMAN<br>
+              <strong>Ph:</strong> ${order.phone}
+            </div>
+          </div>
+
+          <!-- Shipper's Address -->
+          <div class="address-section" style="margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; padding: ${pageSize === 'A5' ? '10px' : '15px'}; background-color: #f9f9f9; border-left: 3px solid #2196F3;">
+            <div style="font-weight: bold; margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'}; font-size: ${pageSize === 'A5' ? '12px' : '14px'};">From : SHIPPER'S ADDRESS</div>
+            <div style="font-size: ${pageSize === 'A5' ? '11px' : '13px'}; line-height: 1.6;">
+              <strong>Qeelu Store</strong><br>
+              Mabela, Muscat, OMAN<br>
+              <strong>Ph:</strong> +968 XXXXXXXX
+            </div>
+          </div>
+
+          <!-- Order Details -->
+          <div class="details-section" style="margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'};">
+            <div style="font-weight: bold; margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'}; font-size: ${pageSize === 'A5' ? '12px' : '14px'}; border-bottom: 1px solid #ddd; padding-bottom: 5px;">ORDER DETAILS</div>
+            <div style="font-size: ${pageSize === 'A5' ? '11px' : '13px'}; line-height: 1.8;">
+              <div style="margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'};">
+                <strong>Products:</strong><br>
+                <div style="margin-left: ${pageSize === 'A5' ? '10px' : '15px'}; margin-top: 5px;">
+                  ${productsList}
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: ${pageSize === 'A5' ? '10px' : '15px'}; padding-top: ${pageSize === 'A5' ? '10px' : '15px'}; border-top: 2px solid #000;">
+                <div>
+                  <div><strong>Total Items:</strong> ${order.products.reduce((sum, p) => sum + p.quantity, 0)}</div>
+                  <div style="margin-top: 5px;"><strong>Status:</strong> ${order.status.toUpperCase()}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: ${pageSize === 'A5' ? '14px' : '18px'}; font-weight: bold; color: #4CAF50;">
+                    <strong>Total: ${order.total.toFixed(2)} OMR</strong>
+                  </div>
+                  <div style="font-size: ${pageSize === 'A5' ? '10px' : '12px'}; color: #666; margin-top: 5px;">
+                    Amount to Collect: ${order.total.toFixed(2)} OMR
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div style="margin-top: ${pageSize === 'A5' ? '15px' : '20px'}; padding-top: ${pageSize === 'A5' ? '10px' : '15px'}; border-top: 1px solid #ddd; font-size: ${pageSize === 'A5' ? '9px' : '11px'}; color: #666; text-align: center;">
+            <div>Thank you for your order!</div>
+            <div style="margin-top: 5px;">For tracking, visit: www.qeelu.com</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Create print window
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      showToast('Please allow popups to print', 'error');
+      return;
+    }
+
+    const pageSizeCSS = pageSize === 'A5' ? 'A5' : 'A4';
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Print Orders - Qeelu Store</title>
+          <style>
+            @media print {
+              @page {
+                size: ${pageSizeCSS};
+                margin: ${pageSize === 'A5' ? '8mm' : '10mm'};
+              }
+              body {
+                margin: 0;
+                padding: 0;
+              }
+            }
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: ${pageSize === 'A5' ? '15px' : '20px'};
+            }
+            .order-page {
+              ${pageSize === 'A5' ? 'font-size: 11px;' : ''}
+            }
+            .order-page h2 {
+              ${pageSize === 'A5' ? 'font-size: 18px;' : 'font-size: 24px;'}
+            }
+            .order-page .header {
+              ${pageSize === 'A5' ? 'padding: 10px; margin-bottom: 15px;' : 'padding: 20px; margin-bottom: 20px;'}
+            }
+            .order-page .address-section {
+              ${pageSize === 'A5' ? 'padding: 10px; margin-bottom: 15px; font-size: 11px;' : 'padding: 15px; margin-bottom: 20px;'}
+            }
+            .order-page .details-section {
+              ${pageSize === 'A5' ? 'padding: 10px; font-size: 11px;' : 'padding: 15px;'}
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    
+    // Wait for content to load, then print
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+      // Optionally close the window after printing
+      // printWindow.close();
+    }, 250);
+  };
+
+  const handlePrintSelected = (pageSize: 'A4' | 'A5' = 'A4') => {
+    const ordersToPrint = orders.filter(o => selectedOrders.includes(o.id));
+    printOrders(ordersToPrint, pageSize);
+  };
+
+  const handlePrintAll = (pageSize: 'A4' | 'A5' = 'A4') => {
+    printOrders(filteredOrders, pageSize);
+  };
+
   // Import from Excel function
   const handleImportExcel = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -1107,64 +1275,317 @@ function AdminOrdersContent() {
           </p>
         </div>
 
-        {/* Export Buttons */}
+        {/* Export/Import/Print Buttons */}
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          {selectedOrders.length > 0 && (
+          {/* Export Dropdown */}
+          <div style={{ position: 'relative' }} id="export-dropdown-container">
             <button
-              onClick={handleExportSelected}
+              onClick={(e) => {
+                e.stopPropagation();
+                const dropdown = document.getElementById('export-dropdown');
+                if (dropdown) {
+                  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                }
+              }}
+              disabled={filteredOrders.length === 0}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
                 padding: '12px 18px',
                 borderRadius: '10px',
-                border: 'none',
-                backgroundColor: '#4CAF50',
-                color: '#fff',
+                border: '2px solid #1a1a2e',
+                backgroundColor: '#fff',
+                color: '#1a1a2e',
                 fontSize: '14px',
                 fontWeight: '600',
-                cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)',
+                cursor: filteredOrders.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: filteredOrders.length === 0 ? 0.5 : 1,
                 transition: 'all 0.2s ease',
               }}
-              className="hover:opacity-90"
+              className="hover:bg-gray-50"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <line x1="9" y1="15" x2="15" y2="15" />
               </svg>
-              {t('admin.orders.export.selected')} ({selectedOrders.length})
+              Export
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </button>
-          )}
-          <button
-            onClick={handleExportAll}
-            disabled={filteredOrders.length === 0}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 18px',
-              borderRadius: '10px',
-              border: '2px solid #1a1a2e',
-              backgroundColor: '#fff',
-              color: '#1a1a2e',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: filteredOrders.length === 0 ? 'not-allowed' : 'pointer',
-              opacity: filteredOrders.length === 0 ? 0.5 : 1,
-              transition: 'all 0.2s ease',
-            }}
-            className="hover:bg-gray-50"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="12" y1="18" x2="12" y2="12" />
-              <line x1="9" y1="15" x2="15" y2="15" />
-            </svg>
-            {t('admin.orders.export.all')} {filterStatus !== 'all' ? `(${t(`admin.orders.statuses.${filterStatus}`)})` : ''}
-          </button>
+            <div
+              id="export-dropdown"
+              style={{
+                display: 'none',
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '4px',
+                backgroundColor: '#fff',
+                borderRadius: '10px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                border: '1px solid #e0e0e0',
+                zIndex: 1000,
+                minWidth: '200px',
+                overflow: 'hidden',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {selectedOrders.length > 0 && (
+                <button
+                  onClick={() => {
+                    handleExportSelected();
+                    const dropdown = document.getElementById('export-dropdown');
+                    if (dropdown) dropdown.style.display = 'none';
+                  }}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '12px 16px',
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    color: '#1a1a2e',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    transition: 'background-color 0.2s ease',
+                    borderBottom: '1px solid #f0f0f0',
+                  }}
+                  className="hover:bg-gray-50"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  {t('admin.orders.export.selected')} ({selectedOrders.length})
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  handleExportAll();
+                  const dropdown = document.getElementById('export-dropdown');
+                  if (dropdown) dropdown.style.display = 'none';
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '12px 16px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#1a1a2e',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease',
+                }}
+                className="hover:bg-gray-50"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                Export All {filterStatus !== 'all' ? `(${t(`admin.orders.statuses.${filterStatus}`)})` : ''}
+              </button>
+            </div>
+          </div>
+
+          {/* Print Dropdown */}
+          <div style={{ position: 'relative' }} id="print-dropdown-container">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const dropdown = document.getElementById('print-dropdown');
+                if (dropdown) {
+                  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                }
+              }}
+              disabled={filteredOrders.length === 0}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 18px',
+                borderRadius: '10px',
+                border: '2px solid #FF9800',
+                backgroundColor: '#fff',
+                color: '#FF9800',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: filteredOrders.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: filteredOrders.length === 0 ? 0.5 : 1,
+                transition: 'all 0.2s ease',
+              }}
+              className="hover:bg-orange-50"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <polyline points="6 14 12 20 18 14" />
+              </svg>
+              Print
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div
+              id="print-dropdown"
+              style={{
+                display: 'none',
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '4px',
+                backgroundColor: '#fff',
+                borderRadius: '10px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                border: '1px solid #e0e0e0',
+                zIndex: 1000,
+                minWidth: '220px',
+                overflow: 'hidden',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {selectedOrders.length > 0 && (
+                <>
+                  <div style={{ padding: '8px 16px', fontSize: '11px', fontWeight: '600', color: '#999', textTransform: 'uppercase', borderBottom: '1px solid #f0f0f0' }}>
+                    Print Selected ({selectedOrders.length})
+                  </div>
+                  <button
+                    onClick={() => {
+                      handlePrintSelected('A4');
+                      const dropdown = document.getElementById('print-dropdown');
+                      if (dropdown) dropdown.style.display = 'none';
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '10px 16px',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#1a1a2e',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background-color 0.2s ease',
+                    }}
+                    className="hover:bg-gray-50"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <line x1="9" y1="3" x2="9" y2="21" />
+                    </svg>
+                    Print Selected - A4
+                  </button>
+                  <button
+                    onClick={() => {
+                      handlePrintSelected('A5');
+                      const dropdown = document.getElementById('print-dropdown');
+                      if (dropdown) dropdown.style.display = 'none';
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '10px 16px',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#1a1a2e',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background-color 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0',
+                    }}
+                    className="hover:bg-gray-50"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <line x1="9" y1="3" x2="9" y2="21" />
+                    </svg>
+                    Print Selected - A5
+                  </button>
+                </>
+              )}
+              <div style={{ padding: '8px 16px', fontSize: '11px', fontWeight: '600', color: '#999', textTransform: 'uppercase', borderTop: selectedOrders.length > 0 ? '1px solid #f0f0f0' : 'none', borderBottom: '1px solid #f0f0f0' }}>
+                Print All {filterStatus !== 'all' ? `(${t(`admin.orders.statuses.${filterStatus}`)})` : ''}
+              </div>
+              <button
+                onClick={() => {
+                  handlePrintAll('A4');
+                  const dropdown = document.getElementById('print-dropdown');
+                  if (dropdown) dropdown.style.display = 'none';
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px 16px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#1a1a2e',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease',
+                }}
+                className="hover:bg-gray-50"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <polyline points="6 14 12 20 18 14" />
+                </svg>
+                Print All - A4
+              </button>
+              <button
+                onClick={() => {
+                  handlePrintAll('A5');
+                  const dropdown = document.getElementById('print-dropdown');
+                  if (dropdown) dropdown.style.display = 'none';
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px 16px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#1a1a2e',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease',
+                }}
+                className="hover:bg-gray-50"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <polyline points="6 14 12 20 18 14" />
+                </svg>
+                Print All - A5
+              </button>
+            </div>
+          </div>
           
           {/* Import Button */}
           <div>
