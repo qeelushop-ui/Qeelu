@@ -60,6 +60,7 @@ export default function RootLayout({
             `,
           }}
         />
+        snaptr('track', 'ADD_CART', {'price': INSERT_PRICE, 'currency': 'INSERT_CURRENCY', 'item_ids': ['INSERT_ITEM_ID_1', 'INSERT_ITEM_ID_2'], 'item_category': 'INSERT_ITEM_CATEGORY', 'number_items': INSERT_NUMBER_ITEMS, 'uuid_c1': 'INSERT_UUID_C1', 'user_email': 'INSERT_USER_EMAIL', 'user_phone_number': 'INSERT_USER_PHONE_NUMBER', 'user_hashed_email': 'INSERT_USER_HASHED_EMAIL', 'user_hashed_phone_number': 'INSERT_USER_HASHED_PHONE_NUMBER'})
         <I18nProvider>
           <ProductProvider>
             <OrderProvider>
