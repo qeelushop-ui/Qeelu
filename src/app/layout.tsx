@@ -270,10 +270,7 @@ export default function RootLayout({
     `,
   }}
 />
-ttq.track('CompletePayment', {
-  value: 7.90,
-  currency: 'OMR'
-});
+
 
         <noscript>
           <img 
