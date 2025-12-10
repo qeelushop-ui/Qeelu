@@ -173,6 +173,64 @@ export default function RootLayout({
   }}
 />
 
+        {/* TikTok Pixel Code */}
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject = t;
+        var ttq = w[t] = w[t] || [];
+        ttq.methods = [
+          "page", "track", "identify", "instances",
+          "debug", "on", "off", "once", "ready",
+          "alias", "group", "enableCookie", "disableCookie"
+        ];
+        ttq.setAndDefer = function (t, e) {
+          t[e] = function () {
+            t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+          }
+        };
+        for (var i = 0; i < ttq.methods.length; i++) {
+          ttq.setAndDefer(ttq, ttq.methods[i])
+        }
+        ttq.instance = function (t) {
+          var e = ttq._i[t] || [];
+          for (var r = 0; r < ttq.methods.length; r++) {
+            ttq.setAndDefer(e, ttq.methods[r])
+          }
+          return e
+        };
+        ttq.load = function (t, e) {
+          var r = "https://analytics.tiktok.com/i18n/pixel/events.js";
+          ttq._i = ttq._i || {};
+          ttq._i[t] = [];
+          ttq._i[t]._u = r;
+          ttq._t = ttq._t || {};
+          ttq._t[t] = +new Date;
+          ttq._o = ttq._o || {};
+          ttq._o[t] = e || {};
+          var a = document.createElement("script");
+          a.type = "text/javascript";
+          a.async = !0;
+          a.src = r + "?sdkid=" + t + "&lib=" + "ttq";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(a, s)
+        };
+
+        // === LOAD BOTH PIXELS === 
+
+        // Pixel 1
+        ttq.load('D4Q11B3C77UEL4B6KHHG');
+        ttq.page();
+
+        // Pixel 2
+        ttq.load('D4RFHKBC77U52IPQMSIG');
+        ttq.page();
+      }(window, document, 'ttq');
+    `,
+  }}
+/>
+
         <noscript>
           <img 
             height="1" 
