@@ -271,6 +271,19 @@ export default function RootLayout({
   }}
 />
 
+{/* Meta Pixel – Additional Pixel Init */}
+<Script
+  id="meta-pixel-25427020606950381"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      if (window.fbq) {
+        fbq('init', '25427020606950381');
+        fbq('track', 'PageView');
+      }
+    `,
+  }}
+/>
 
         <noscript>
           <img 
