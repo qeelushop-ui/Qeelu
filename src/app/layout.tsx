@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import I18nProvider from "@/components/I18nProvider";
 import { ProductProvider } from "@/context/ProductContext";
 import { OrderProvider } from "@/context/OrderContext";
-
-const poppins = Poppins({
-  weight: ['400', '500', '600', '700'],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  display: 'swap',
-  fallback: ['system-ui', 'arial'],
-  adjustFontFallback: false,
-});
 
 export const metadata: Metadata = {
   title: "Qeelu Oman - Online Shopping with Free Delivery | Electronics, Watches & Gadgets",
@@ -43,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} font-sans antialiased bg-[#f5f5f5]`}>
+      <body className="font-sans antialiased bg-[#f5f5f5]">
         <Script
           id="snap-pixel"
           strategy="afterInteractive"

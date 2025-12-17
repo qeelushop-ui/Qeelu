@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { ensureDatabaseInitialized } from '@/lib/auto-init';
+import { generateNextOrderId } from '@/lib/order-id';
 
 export const dynamic = 'force-dynamic';
 
@@ -62,7 +63,6 @@ export async function POST(request: NextRequest) {
     });
     const body = await request.json();
     const {
-      id,
       customer,
       phone,
       city,
@@ -74,7 +74,17 @@ export async function POST(request: NextRequest) {
       time,
     } = body;
 
-    console.log('Creating order with data:', { id, customer, phone, city, address, products, total, status, date, time });
+    // Always generate a unique order ID on the server to avoid duplicate primary key errors
+    let orderId: string;
+    try {
+      orderId = await generateNextOrderId();
+    } catch (idError) {
+      console.error('Error generating order ID, falling back to timestamp-based ID:', idError);
+      const random = Math.floor(Math.random() * 9999) + 1;
+      orderId = `#QE${random.toString().padStart(4, '0')}`;
+    }
+
+    console.log('Creating order with data:', { id: orderId, customer, phone, city, address, products, total, status, date, time });
 
     // Ensure proper type casting for PostgreSQL
     const result = await sql`
@@ -91,7 +101,7 @@ export async function POST(request: NextRequest) {
         time
       )
       VALUES (
-        ${id},
+        ${orderId},
         ${customer},
         ${phone},
         ${city},

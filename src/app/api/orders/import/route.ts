@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
+import { generateNextOrderId } from '@/lib/order-id';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,10 +19,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Get current order count to generate sequential IDs
-    const existingOrders = await sql`SELECT COUNT(*) as count FROM orders`;
-    let currentCount = Number(existingOrders[0]?.count || 0);
 
     // Fetch all products from database for intelligent pricing
     const allProducts = await sql`
@@ -55,10 +52,10 @@ export async function POST(request: NextRequest) {
           const excelPrice = prod.price;
 
           // Try to find product in database (fuzzy matching)
-          const dbProduct = allProducts.find((p: any) => {
-            const titleEn = p.title_en.toLowerCase();
-            const titleAr = p.title_ar;
-            const searchName = productName.toLowerCase();
+          const dbProduct = (allProducts as any[]).find((p: any) => {
+            const titleEn = String(p.title_en || '').toLowerCase();
+            const titleAr = String(p.title_ar || '');
+            const searchName = String(productName || '').toLowerCase();
             
             return titleEn.includes(searchName) || 
                    searchName.includes(titleEn) ||
@@ -67,48 +64,42 @@ export async function POST(request: NextRequest) {
 
           if (dbProduct) {
             // Product exists in database
-            const pricingTiers = dbProduct.pricing_tiers;
+            const pricingTiers = (dbProduct as any).pricing_tiers;
             
-            if (pricingTiers && Array.isArray(pricingTiers) && pricingTiers.length > 0) {
-              // Pricing tiers available - Use tier price
-              const tier = pricingTiers.find((t: any) => t.quantity === quantity);
+            if (Array.isArray(pricingTiers) && pricingTiers.length > 0) {
+              // Use tier price if exact quantity tier exists
+              const tier = (pricingTiers as any[]).find((t: any) => t.quantity === quantity);
               
               if (tier) {
-                // Tier found for this quantity
+                // tier.price is total for that quantity → store unit price
+                const unitPrice = Number(tier.price) / Number(tier.quantity || 1);
                 return {
                   name: productName,
-                  quantity: quantity,
-                  price: tier.price / tier.quantity, // Unit price from tier
-                };
-              } else {
-                // Tier not found for this quantity - Use Excel price
-                return {
-                  name: productName,
-                  quantity: quantity,
-                  price: excelPrice,
+                  quantity,
+                  price: Number.isFinite(unitPrice) ? unitPrice : Number(excelPrice) || 0,
                 };
               }
-            } else {
-              // No pricing tiers - Use Excel price (manual entry)
-              return {
-                name: productName,
-                quantity: quantity,
-                price: excelPrice,
-              };
             }
-          } else {
-            // Product not in database - Use Excel price (custom product)
+
+            // Fallback to product's current price or excel price
+            const fallbackPrice = Number((dbProduct as any).current_price ?? excelPrice) || 0;
             return {
               name: productName,
-              quantity: quantity,
-              price: excelPrice,
+              quantity,
+              price: fallbackPrice,
             };
           }
+
+          // Product not in database - use Excel price as unit price
+          return {
+            name: productName,
+            quantity,
+            price: Number(excelPrice) || 0,
+          };
         });
 
-        // Generate sequential order ID
-        currentCount++;
-        const orderId = `#QE${currentCount.toString().padStart(4, '0')}`;
+        // Generate unique order ID using shared helper
+        const orderId = await generateNextOrderId();
 
         // Get current date and time
         const now = new Date();
@@ -141,7 +132,7 @@ export async function POST(request: NextRequest) {
             ${orderData.phone},
             ${orderData.city},
             ${orderData.address},
-            ${JSON.stringify(orderData.products)},
+            ${JSON.stringify(processedProducts)},
             ${total},
             'pending',
             ${date},
