@@ -85,6 +85,196 @@ export default function RootLayout({
             `,
           }}
         />
+
+        {/* TikTok Pixel Code */}
+<Script
+  id="tiktok-pixel-new"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject=t;
+        var ttq=w[t]=w[t]||[];
+        ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+        ttq.setAndDefer=function(t,e){
+          t[e]=function(){
+            t.push([e].concat(Array.prototype.slice.call(arguments,0)))
+          }
+        };
+        for(var i=0;i<ttq.methods.length;i++){
+          ttq.setAndDefer(ttq,ttq.methods[i])
+        }
+        ttq.instance=function(t){
+          for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++){
+            ttq.setAndDefer(e,ttq.methods[n])
+          }
+          return e
+        };
+        ttq.load=function(e,n){
+          var r="https://analytics.tiktok.com/i18n/pixel/events.js",
+          o=n&&n.partner;
+          ttq._i=ttq._i||{};
+          ttq._i[e]=[];
+          ttq._i[e]._u=r;
+          ttq._t=ttq._t||{};
+          ttq._t[e]=+new Date;
+          ttq._o=ttq._o||{};
+          ttq._o[e]=n||{};
+          n=document.createElement("script");
+          n.type="text/javascript";
+          n.async=!0;
+          n.src=r+"?sdkid="+e+"&lib="+t;
+          e=document.getElementsByTagName("script")[0];
+          e.parentNode.insertBefore(n,e)
+        };
+        ttq.load('D4RFHKBC77U52IPQMSIG');
+        ttq.page();
+      }(window, document, 'ttq');
+    `,
+  }}
+/>
+
+        {/* TikTok Pixel Code */}
+<Script
+  id="tiktok-pixel"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
+        ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],
+        ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+        for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+        ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
+        ttq.load=function(e,n){
+          var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;
+          ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,
+          ttq._t=ttq._t||{},ttq._t[e]=+new Date,
+          ttq._o=ttq._o||{},ttq._o[e]=n||{};
+          n=document.createElement("script");
+          n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;
+          e=document.getElementsByTagName("script")[0];
+          e.parentNode.insertBefore(n,e)
+        };
+        ttq.load('D4SNND3C77U3O2FSIOT0');
+        ttq.page();
+      }(window, document, 'ttq');
+    `,
+  }}
+/>
+
+        {/* TikTok Pixel Code */}
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject = t;
+        var ttq = w[t] = w[t] || [];
+        ttq.methods = [
+          "page", "track", "identify", "instances",
+          "debug", "on", "off", "once", "ready",
+          "alias", "group", "enableCookie", "disableCookie"
+        ];
+        ttq.setAndDefer = function (t, e) {
+          t[e] = function () {
+            t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+          }
+        };
+        for (var i = 0; i < ttq.methods.length; i++) {
+          ttq.setAndDefer(ttq, ttq.methods[i])
+        }
+        ttq.instance = function (t) {
+          var e = ttq._i[t] || [];
+          for (var r = 0; r < ttq.methods.length; r++) {
+            ttq.setAndDefer(e, ttq.methods[r])
+          }
+          return e
+        };
+        ttq.load = function (t, e) {
+          var r = "https://analytics.tiktok.com/i18n/pixel/events.js";
+          ttq._i = ttq._i || {};
+          ttq._i[t] = [];
+          ttq._i[t]._u = r;
+          ttq._t = ttq._t || {};
+          ttq._t[t] = +new Date;
+          ttq._o = ttq._o || {};
+          ttq._o[t] = e || {};
+          var a = document.createElement("script");
+          a.type = "text/javascript";
+          a.async = !0;
+          a.src = r + "?sdkid=" + t + "&lib=" + "ttq";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(a, s)
+        };
+
+        // === LOAD BOTH PIXELS === 
+
+        // Pixel 1
+        ttq.load('D4Q11B3C77UEL4B6KHHG');
+        ttq.page();
+
+        // Pixel 2
+        ttq.load('D4RFHKBC77U52IPQMSIG');
+        ttq.page();
+      }(window, document, 'ttq');
+    `,
+  }}
+/>
+        {/* TikTok Pixel Code */}
+<Script
+  id="tiktok-pixel"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject=t;
+        var ttq=w[t]=w[t]||[];
+        ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+        ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+        for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+        ttq.instance=function(t){
+          for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);
+          return e
+        };
+        ttq.load=function(e,n){
+          var r="https://analytics.tiktok.com/i18n/pixel/events.js";
+          var o=n&&n.partner;
+          ttq._i=ttq._i||{};
+          ttq._i[e]=[];
+          ttq._i[e]._u=r;
+          ttq._t=ttq._t||{};
+          ttq._t[e]=+new Date;
+          ttq._o=ttq._o||{};
+          ttq._o[e]=n||{};
+          n=document.createElement("script");
+          n.type="text/javascript";
+          n.async=!0;
+          n.src=r+"?sdkid="+e+"&lib="+t;
+          e=document.getElementsByTagName("script")[0];
+          e.parentNode.insertBefore(n,e)
+        };
+
+        ttq.load('D3OGC13C77U93U3T1L40');
+        ttq.page();
+      }(window, document, 'ttq');
+    `,
+  }}
+/>
+
+{/* Meta Pixel – Additional Pixel Init */}
+<Script
+  id="meta-pixel-25427020606950381"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      if (window.fbq) {
+        fbq('init', '25427020606950381');
+        fbq('track', 'PageView');
+      }
+    `,
+  }}
+/>
+
         <noscript>
           <img 
             height="1" 
