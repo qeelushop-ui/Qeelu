@@ -278,9 +278,29 @@ function ProductModal({ isOpen, onClose, product, onSave, t }: ProductModalProps
       
       // Add title and description - preserve existing if editing, or prepare for translation
       if (product) {
-        // Editing: Keep existing title/description in {en, ar} format
-        productData.title = product.title;
-        productData.description = product.description;
+        // Editing: Update title/description in current language, preserve other language
+        const existingTitle = typeof product.title === 'object' ? product.title : { en: product.title, ar: '' };
+        const existingDescription = typeof product.description === 'object' ? product.description : { en: product.description, ar: '' };
+        
+        if (currentLang === 'en') {
+          productData.title = {
+            en: formData.title,
+            ar: existingTitle.ar || ''
+          };
+          productData.description = {
+            en: formData.description,
+            ar: existingDescription.ar || ''
+          };
+        } else {
+          productData.title = {
+            en: existingTitle.en || '',
+            ar: formData.title
+          };
+          productData.description = {
+            en: existingDescription.en || '',
+            ar: formData.description
+          };
+        }
       } else {
         // New product: Format for auto-translation
         if (currentLang === 'en') {

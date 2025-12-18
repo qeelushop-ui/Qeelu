@@ -91,6 +91,18 @@ export default function Footer() {
             <address style={{ fontStyle: 'normal', color: '#555555', fontSize: '14px', lineHeight: '1.8' }}>
               <p>Al Mabailah</p>
               <p>Muscat, Oman</p>
+              <p style={{ marginTop: '8px' }}>
+                <a 
+                  href="https://wa.me/96891434609" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#25d366', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  className="hover:underline"
+                >
+                  <span>📱</span>
+                  <span>+968 91434609</span>
+                </a>
+              </p>
             </address>
           </div>
 

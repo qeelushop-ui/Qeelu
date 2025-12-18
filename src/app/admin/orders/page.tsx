@@ -1870,19 +1870,15 @@ function AdminOrdersContent() {
         className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7"
         style={{ gap: '12px', marginBottom: '20px' }}
       >
-        {/* Total Orders */}
+        {/* Last 24 Hours */}
         <div style={{
           backgroundColor: '#1a1a2e',
           borderRadius: '14px',
           padding: '16px',
           color: '#fff',
         }}>
-          <p style={{ fontSize: '12px', opacity: 0.7, marginBottom: '8px' }}>{t('admin.orders.stats.total')}</p>
-          <p style={{ fontSize: '26px', fontWeight: '700', marginBottom: '12px' }}>{stats.total}</p>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
-            <p style={{ fontSize: '11px', opacity: 0.8, marginBottom: '4px' }}>Last 24 Hours</p>
-            <p style={{ fontSize: '20px', fontWeight: '700' }}>{stats.last24Hours}</p>
-          </div>
+          <p style={{ fontSize: '12px', opacity: 0.7, marginBottom: '8px' }}>Last 24 Hours</p>
+          <p style={{ fontSize: '26px', fontWeight: '700' }}>{stats.last24Hours}</p>
         </div>
 
         {/* Revenue */}

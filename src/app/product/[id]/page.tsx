@@ -355,7 +355,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   const quantityOptions = product.pricingTiers && product.pricingTiers.length > 0
     ? product.pricingTiers.map(tier => ({
         value: tier.quantity.toString(),
-        label: `${tier.quantity} ${tier.quantity === 1 ? t('orderForm.piece') : t('orderForm.pieces')} - ${tier.price.toFixed(2)} OMR${tier.discount ? ` (${tier.discount}% OFF)` : ''}`
+        label: `${tier.quantity} ${tier.quantity === 1 ? t('orderForm.piece') : t('orderForm.pieces')} - ${tier.price.toFixed(2)} OMR`
       }))
     : [
         { value: '1', label: `1 ${t('orderForm.piece')} - ${product.currentPrice.toFixed(2)} OMR` },
