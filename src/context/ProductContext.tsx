@@ -8,7 +8,7 @@ import { addProductToI18n } from '@/utils/getProductText';
 interface ProductContextType {
   products: Product[];
   addProduct: (product: Partial<Product>, currentLang: 'en' | 'ar') => Promise<{ success: boolean; error?: string }>;
-  updateProduct: (product: Product) => void;
+  updateProduct: (product: Product) => Promise<{ success: boolean; error?: string }>;
   deleteProduct: (id: number) => void;
   toggleProductStatus: (id: number) => void;
   getActiveProducts: () => Product[];
@@ -131,7 +131,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateProduct = async (updatedProduct: Product) => {
+  const updateProduct = async (updatedProduct: Product): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await fetch('/api/products', {
         method: 'PUT',
@@ -141,14 +141,24 @@ export function ProductProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const data = await response.json();
-    setProducts(products.map(p => 
+        setProducts(products.map(p => 
           p.id === data.product.id ? data.product : p
-    ));
+        ));
+        return { success: true };
       } else {
-        console.error('Failed to update product');
+        const errorData = await response.json();
+        console.error('Failed to update product:', errorData);
+        return { 
+          success: false, 
+          error: errorData.error || errorData.details || 'Failed to update product' 
+        };
       }
     } catch (error) {
       console.error('Error updating product:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Network error occurred' 
+      };
     }
   };
 

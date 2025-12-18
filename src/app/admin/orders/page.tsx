@@ -10,6 +10,40 @@ import { cities, getCityName } from '@/data/products';
 import Image from 'next/image';
 import * as XLSX from 'xlsx';
 
+// Format date: day/month/year (e.g., 18/Dec/25)
+const formatDate = (dateStr: string): string => {
+  try {
+    // Handle ISO format (2025-12-17T19:00:00.000Z) or simple format (2025-12-17)
+    const datePart = dateStr.split('T')[0].split(' ')[0]; // Get date part before T or space
+    const [year, month, day] = datePart.split('-');
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthIndex = parseInt(month, 10) - 1;
+    // Use 2-digit year (last 2 digits)
+    const yearShort = year.slice(-2);
+    return `${day}/${monthNames[monthIndex]}/${yearShort}`;
+  } catch (e) {
+    return dateStr;
+  }
+};
+
+// Format time: 12-hour format with AM/PM (e.g., 1:00 PM, 2:53 PM)
+const formatTime = (timeStr: string): string => {
+  try {
+    const [hours, minutes] = timeStr.split(':');
+    const hour24 = parseInt(hours, 10);
+    const min = minutes || '00';
+    
+    // Convert to 12-hour format
+    let hour12 = hour24 % 12;
+    if (hour12 === 0) hour12 = 12; // 0 becomes 12 (midnight/noon)
+    const ampm = hour24 >= 12 ? 'PM' : 'AM';
+    
+    return `${hour12}:${min}${ampm}`;
+  } catch (e) {
+    return timeStr;
+  }
+};
+
 type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 const statusConfig: Record<OrderStatus, { color: string; bgColor: string; icon: string }> = {
@@ -358,7 +392,7 @@ function OrderDetailModal({ order, isOpen, onClose, onUpdateStatus }: OrderDetai
               <polyline points="12 6 12 12 16 14" />
             </svg>
             <span style={{ fontSize: '13px', color: '#666' }}>
-              {order.date} • {order.time}
+              {formatDate(order.date)} • {formatTime(order.time)}
             </span>
           </div>
         </div>
@@ -397,9 +431,37 @@ function EditOrderModal({ order, isOpen, onClose, onSave }: EditOrderModalProps)
   if (!isOpen || !order) return null;
 
   const handleSave = () => {
+    // Validate required fields
+    if (!formData.customer || !formData.phone || !formData.city || !formData.address) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    // Validate products
+    if (formData.products.length === 0) {
+      alert('Please add at least one product');
+      return;
+    }
+
+    // Validate product names and prices
+    const invalidProducts = formData.products.filter(p => !p.name.trim() || p.price <= 0);
+    if (invalidProducts.length > 0) {
+      alert('Please ensure all products have a name and valid price');
+      return;
+    }
+
     // Calculate new total based on updated products
     const newTotal = formData.products.reduce((sum, p) => sum + (p.price * p.quantity), 0);
-    onSave(order.id, { ...formData, total: newTotal });
+    
+    // Preserve order ID, date, and time - only update the fields that were edited
+    onSave(order.id, { 
+      ...formData, 
+      total: newTotal,
+      // Keep original date and time
+      date: order.date,
+      time: order.time,
+      status: order.status,
+    });
     onClose();
   };
   
@@ -592,7 +654,7 @@ function EditOrderModal({ order, isOpen, onClose, onSave }: EditOrderModalProps)
             />
           </div>
 
-          {/* Products - Editable Quantity */}
+          {/* Products - Fully Editable */}
           <div style={{
             backgroundColor: '#f8f9fa',
             borderRadius: '12px',
@@ -600,55 +662,148 @@ function EditOrderModal({ order, isOpen, onClose, onSave }: EditOrderModalProps)
             marginBottom: '20px',
             border: '2px solid #e3f2fd',
           }}>
-            <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#1a1a2e', marginBottom: '12px', textTransform: 'uppercase' }}>
-              🛒 {t('admin.orders.products')}
-            </h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3 style={{ fontSize: '13px', fontWeight: '700', color: '#1a1a2e', textTransform: 'uppercase' }}>
+                🛒 {t('admin.orders.products')}
+              </h3>
+              <button
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    products: [...formData.products, { name: '', quantity: 1, price: 0 }]
+                  });
+                }}
+                style={{
+                  padding: '6px 12px',
+                  border: '2px solid #4CAF50',
+                  borderRadius: '6px',
+                  backgroundColor: '#fff',
+                  color: '#4CAF50',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                }}
+              >
+                + Add Product
+              </button>
+            </div>
             {formData.products.map((product, index) => (
               <div key={index} style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                gap: '12px',
                 marginBottom: '12px',
-                padding: '10px',
+                padding: '12px',
                 backgroundColor: '#fff',
                 borderRadius: '8px',
                 border: '1px solid #e0e0e0',
               }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a2e', marginBottom: '4px' }}>
-                    {product.name}
-                  </p>
-                  <p style={{ fontSize: '12px', color: '#666' }}>
-                    Price: {product.price.toFixed(2)} OMR
-                  </p>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: '600', color: '#666' }}>Qty:</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={product.quantity}
-                    onChange={(e) => updateProductQuantity(index, parseInt(e.target.value) || 1)}
-                    style={{
-                      width: '70px',
-                      padding: '8px',
-                      border: '2px solid #2196F3',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      fontWeight: '700',
-                      color: '#000',
-                      textAlign: 'center',
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: '#666', marginBottom: '4px' }}>
+                      Product Name
+                    </label>
+                    <input
+                      type="text"
+                      value={product.name}
+                      onChange={(e) => {
+                        const updatedProducts = [...formData.products];
+                        updatedProducts[index].name = e.target.value;
+                        setFormData({ ...formData, products: updatedProducts });
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        border: '2px solid #e8e8e8',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#000',
+                        outline: 'none',
+                      }}
+                      placeholder="Product name"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      const updatedProducts = formData.products.filter((_, i) => i !== index);
+                      setFormData({ ...formData, products: updatedProducts });
                     }}
-                  />
+                    style={{
+                      padding: '8px 10px',
+                      border: '2px solid #f44336',
+                      borderRadius: '6px',
+                      backgroundColor: '#fff',
+                      color: '#f44336',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      alignSelf: 'flex-end',
+                    }}
+                  >
+                    Remove
+                  </button>
                 </div>
-                <div style={{ 
-                  fontSize: '14px', 
-                  fontWeight: '700', 
-                  color: '#4CAF50',
-                  minWidth: '70px',
-                  textAlign: 'right'
-                }}>
-                  {(product.price * product.quantity).toFixed(2)}
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: '#666', marginBottom: '4px' }}>
+                      Quantity
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={product.quantity}
+                      onChange={(e) => updateProductQuantity(index, parseInt(e.target.value) || 1)}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        border: '2px solid #2196F3',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        fontWeight: '700',
+                        color: '#000',
+                        textAlign: 'center',
+                      }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: '600', color: '#666', marginBottom: '4px' }}>
+                      Unit Price (OMR)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={product.price}
+                      onChange={(e) => {
+                        const updatedProducts = [...formData.products];
+                        updatedProducts[index].price = parseFloat(e.target.value) || 0;
+                        setFormData({ ...formData, products: updatedProducts });
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        border: '2px solid #4CAF50',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        fontWeight: '700',
+                        color: '#000',
+                        textAlign: 'center',
+                      }}
+                    />
+                  </div>
+                  <div style={{ 
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    paddingBottom: '8px',
+                  }}>
+                    <div style={{ 
+                      fontSize: '14px', 
+                      fontWeight: '700', 
+                      color: '#4CAF50',
+                      textAlign: 'right',
+                      width: '100%'
+                    }}>
+                      Total: {(product.price * product.quantity).toFixed(2)} OMR
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -770,6 +925,7 @@ function AdminOrdersContent() {
   const orderStats = getOrderStats();
   const stats = {
     total: orderStats.total,
+    last24Hours: orderStats.last24Hours,
     pending: orderStats.pending,
     processing: orderStats.processing,
     shipped: orderStats.shipped,
@@ -821,8 +977,8 @@ function AdminOrdersContent() {
         if (printDropdown) printDropdown.style.display = 'none';
       }
     };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
   }, [openStatusDropdown]);
 
   const handleViewOrder = (order: Order) => {
@@ -937,8 +1093,8 @@ function AdminOrdersContent() {
       'Products': order.products.map(p => `${p.name} (x${p.quantity})`).join(', '),
       'Total (OMR)': order.total,
       'Status': order.status,
-      'Date': order.date,
-      'Time': order.time,
+      'Date': formatDate(order.date),
+      'Time': formatTime(order.time),
     }));
 
     // Create workbook and worksheet
@@ -983,7 +1139,7 @@ function AdminOrdersContent() {
   };
 
   // Print orders function
-  const printOrders = (ordersToPrint: Order[], pageSize: 'A4' | 'A5' = 'A4') => {
+  const printOrders = (ordersToPrint: Order[], pageSize: 'A4' | 'A5' | 'A6' = 'A4') => {
     if (ordersToPrint.length === 0) {
       showToast('No orders selected to print', 'error');
       return;
@@ -995,24 +1151,48 @@ function AdminOrdersContent() {
         `${p.name} (Qty: ${p.quantity}, Price: ${p.price.toFixed(2)} OMR)`
       ).join('<br>');
 
+      const padding = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
+      const marginBottom = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
+      const headerFontSize = pageSize === 'A6' ? '14px' : pageSize === 'A5' ? '18px' : '24px';
+      const headerSubFontSize = pageSize === 'A6' ? '9px' : pageSize === 'A5' ? '10px' : '12px';
+      const orderIdFontSize = pageSize === 'A6' ? '12px' : pageSize === 'A5' ? '14px' : '18px';
+      const addressFontSize = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '11px' : '13px';
+      const addressTitleFontSize = pageSize === 'A6' ? '11px' : pageSize === 'A5' ? '12px' : '14px';
+      const detailsFontSize = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '11px' : '13px';
+      const detailsTitleFontSize = pageSize === 'A6' ? '11px' : pageSize === 'A5' ? '12px' : '14px';
+      const totalFontSize = pageSize === 'A6' ? '12px' : pageSize === 'A5' ? '14px' : '18px';
+      const footerFontSize = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '9px' : '11px';
+      const addressPadding = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '10px' : '15px';
+      const addressMarginBottom = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
+      const addressTitleMarginBottom = pageSize === 'A6' ? '6px' : pageSize === 'A5' ? '8px' : '10px';
+      const detailsMarginBottom = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
+      const detailsTitleMarginBottom = pageSize === 'A6' ? '6px' : pageSize === 'A5' ? '8px' : '10px';
+      const headerMarginBottom = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
+      const headerPaddingBottom = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '10px' : '15px';
+      const productsMarginLeft = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '10px' : '15px';
+      const totalMarginTop = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '10px' : '15px';
+      const totalPaddingTop = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '10px' : '15px';
+      const footerMarginTop = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
+      const footerPaddingTop = pageSize === 'A6' ? '8px' : pageSize === 'A5' ? '10px' : '15px';
+
       return `
-        <div class="order-page" style="page-break-after: ${index < ordersToPrint.length - 1 ? 'always' : 'auto'}; padding: ${pageSize === 'A5' ? '15px' : '20px'}; border: 1px solid #ddd; margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; font-family: Arial, sans-serif;">
+        <div class="order-page" style="page-break-after: ${index < ordersToPrint.length - 1 ? 'always' : 'auto'}; padding: ${padding}; border: 1px solid #ddd; margin-bottom: ${marginBottom}; font-family: Arial, sans-serif;">
           <!-- Header with Logo and Barcode -->
-          <div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; border-bottom: 2px solid #000; padding-bottom: ${pageSize === 'A5' ? '10px' : '15px'};">
+          <div class="header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: ${headerMarginBottom}; border-bottom: 2px solid #000; padding-bottom: ${headerPaddingBottom};">
             <div style="flex: 1;">
-              <div style="font-size: ${pageSize === 'A5' ? '18px' : '24px'}; font-weight: bold; margin-bottom: 5px;">Qeelu Store</div>
-              <div style="font-size: ${pageSize === 'A5' ? '10px' : '12px'}; color: #666;">SIMPLIFIED TAX INVOICE</div>
+              <div style="font-size: ${headerFontSize}; font-weight: bold; margin-bottom: 5px;">Qeelu Store</div>
+              <div style="font-size: ${headerSubFontSize}; color: #666;">SIMPLIFIED TAX INVOICE</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-size: ${pageSize === 'A5' ? '14px' : '18px'}; font-weight: bold; margin-bottom: 5px;">Order #${order.id}</div>
-              <div style="font-size: ${pageSize === 'A5' ? '10px' : '12px'}; color: #666;">Date: ${order.date} ${order.time}</div>
+              <div style="font-size: ${orderIdFontSize}; font-weight: bold; margin-bottom: 5px;">Order #${order.id}</div>
+              <div style="font-size: ${headerSubFontSize}; color: #666;">Date: ${formatDate(order.date)} ${formatTime(order.time)}</div>
             </div>
           </div>
 
           <!-- Receiver's Address -->
-          <div class="address-section" style="margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; padding: ${pageSize === 'A5' ? '10px' : '15px'}; background-color: #f9f9f9; border-left: 3px solid #4CAF50;">
-            <div style="font-weight: bold; margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'}; font-size: ${pageSize === 'A5' ? '12px' : '14px'};">To : RECEIVER'S ADDRESS</div>
-            <div style="font-size: ${pageSize === 'A5' ? '11px' : '13px'}; line-height: 1.6;">
+          <div class="address-section" style="margin-bottom: ${addressMarginBottom}; padding: ${addressPadding}; background-color: #f9f9f9; border-left: 3px solid #4CAF50;">
+            <div style="font-weight: bold; margin-bottom: ${addressTitleMarginBottom}; font-size: ${addressTitleFontSize};">To : RECEIVER'S ADDRESS</div>
+            <div style="font-size: ${addressFontSize}; line-height: 1.6;">
               <strong>${order.customer}</strong><br>
               ${order.address}<br>
               ${order.city}, OMAN<br>
@@ -1021,9 +1201,9 @@ function AdminOrdersContent() {
           </div>
 
           <!-- Shipper's Address -->
-          <div class="address-section" style="margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'}; padding: ${pageSize === 'A5' ? '10px' : '15px'}; background-color: #f9f9f9; border-left: 3px solid #2196F3;">
-            <div style="font-weight: bold; margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'}; font-size: ${pageSize === 'A5' ? '12px' : '14px'};">From : SHIPPER'S ADDRESS</div>
-            <div style="font-size: ${pageSize === 'A5' ? '11px' : '13px'}; line-height: 1.6;">
+          <div class="address-section" style="margin-bottom: ${addressMarginBottom}; padding: ${addressPadding}; background-color: #f9f9f9; border-left: 3px solid #2196F3;">
+            <div style="font-weight: bold; margin-bottom: ${addressTitleMarginBottom}; font-size: ${addressTitleFontSize};">From : SHIPPER'S ADDRESS</div>
+            <div style="font-size: ${addressFontSize}; line-height: 1.6;">
               <strong>Qeelu Store</strong><br>
               Mabela, Muscat, OMAN<br>
               <strong>Ph:</strong> +968 XXXXXXXX
@@ -1031,25 +1211,24 @@ function AdminOrdersContent() {
           </div>
 
           <!-- Order Details -->
-          <div class="details-section" style="margin-bottom: ${pageSize === 'A5' ? '15px' : '20px'};">
-            <div style="font-weight: bold; margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'}; font-size: ${pageSize === 'A5' ? '12px' : '14px'}; border-bottom: 1px solid #ddd; padding-bottom: 5px;">ORDER DETAILS</div>
-            <div style="font-size: ${pageSize === 'A5' ? '11px' : '13px'}; line-height: 1.8;">
-              <div style="margin-bottom: ${pageSize === 'A5' ? '8px' : '10px'};">
+          <div class="details-section" style="margin-bottom: ${detailsMarginBottom};">
+            <div style="font-weight: bold; margin-bottom: ${detailsTitleMarginBottom}; font-size: ${detailsTitleFontSize}; border-bottom: 1px solid #ddd; padding-bottom: 5px;">ORDER DETAILS</div>
+            <div style="font-size: ${detailsFontSize}; line-height: 1.8;">
+              <div style="margin-bottom: ${pageSize === 'A6' ? '6px' : pageSize === 'A5' ? '8px' : '10px'};">
                 <strong>Products:</strong><br>
-                <div style="margin-left: ${pageSize === 'A5' ? '10px' : '15px'}; margin-top: 5px;">
+                <div style="margin-left: ${productsMarginLeft}; margin-top: 5px;">
                   ${productsList}
                 </div>
               </div>
-              <div style="display: flex; justify-content: space-between; margin-top: ${pageSize === 'A5' ? '10px' : '15px'}; padding-top: ${pageSize === 'A5' ? '10px' : '15px'}; border-top: 2px solid #000;">
+              <div style="display: flex; justify-content: space-between; margin-top: ${totalMarginTop}; padding-top: ${totalPaddingTop}; border-top: 2px solid #000;">
                 <div>
                   <div><strong>Total Items:</strong> ${order.products.reduce((sum, p) => sum + p.quantity, 0)}</div>
-                  <div style="margin-top: 5px;"><strong>Status:</strong> ${order.status.toUpperCase()}</div>
                 </div>
                 <div style="text-align: right;">
-                  <div style="font-size: ${pageSize === 'A5' ? '14px' : '18px'}; font-weight: bold; color: #4CAF50;">
+                  <div style="font-size: ${totalFontSize}; font-weight: bold; color: #4CAF50;">
                     <strong>Total: ${order.total.toFixed(2)} OMR</strong>
                   </div>
-                  <div style="font-size: ${pageSize === 'A5' ? '10px' : '12px'}; color: #666; margin-top: 5px;">
+                  <div style="font-size: ${pageSize === 'A6' ? '9px' : pageSize === 'A5' ? '10px' : '12px'}; color: #666; margin-top: 5px;">
                     Amount to Collect: ${order.total.toFixed(2)} OMR
                   </div>
                 </div>
@@ -1058,7 +1237,7 @@ function AdminOrdersContent() {
           </div>
 
           <!-- Footer -->
-          <div style="margin-top: ${pageSize === 'A5' ? '15px' : '20px'}; padding-top: ${pageSize === 'A5' ? '10px' : '15px'}; border-top: 1px solid #ddd; font-size: ${pageSize === 'A5' ? '9px' : '11px'}; color: #666; text-align: center;">
+          <div style="margin-top: ${footerMarginTop}; padding-top: ${footerPaddingTop}; border-top: 1px solid #ddd; font-size: ${footerFontSize}; color: #666; text-align: center;">
             <div>Thank you for your order!</div>
             <div style="margin-top: 5px;">For tracking, visit: www.qeelu.com</div>
           </div>
@@ -1073,7 +1252,9 @@ function AdminOrdersContent() {
       return;
     }
 
-    const pageSizeCSS = pageSize === 'A5' ? 'A5' : 'A4';
+    const pageSizeCSS = pageSize === 'A6' ? 'A6' : pageSize === 'A5' ? 'A5' : 'A4';
+    const pageMargin = pageSize === 'A6' ? '6mm' : pageSize === 'A5' ? '8mm' : '10mm';
+    const bodyPadding = pageSize === 'A6' ? '10px' : pageSize === 'A5' ? '15px' : '20px';
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -1084,7 +1265,7 @@ function AdminOrdersContent() {
             @media print {
               @page {
                 size: ${pageSizeCSS};
-                margin: ${pageSize === 'A5' ? '8mm' : '10mm'};
+                margin: ${pageMargin};
               }
               body {
                 margin: 0;
@@ -1094,22 +1275,22 @@ function AdminOrdersContent() {
             body {
               font-family: Arial, sans-serif;
               margin: 0;
-              padding: ${pageSize === 'A5' ? '15px' : '20px'};
+              padding: ${bodyPadding};
             }
             .order-page {
-              ${pageSize === 'A5' ? 'font-size: 11px;' : ''}
+              ${pageSize === 'A6' ? 'font-size: 9px;' : pageSize === 'A5' ? 'font-size: 11px;' : ''}
             }
             .order-page h2 {
-              ${pageSize === 'A5' ? 'font-size: 18px;' : 'font-size: 24px;'}
+              ${pageSize === 'A6' ? 'font-size: 14px;' : pageSize === 'A5' ? 'font-size: 18px;' : 'font-size: 24px;'}
             }
             .order-page .header {
-              ${pageSize === 'A5' ? 'padding: 10px; margin-bottom: 15px;' : 'padding: 20px; margin-bottom: 20px;'}
+              ${pageSize === 'A6' ? 'padding: 8px; margin-bottom: 10px;' : pageSize === 'A5' ? 'padding: 10px; margin-bottom: 15px;' : 'padding: 20px; margin-bottom: 20px;'}
             }
             .order-page .address-section {
-              ${pageSize === 'A5' ? 'padding: 10px; margin-bottom: 15px; font-size: 11px;' : 'padding: 15px; margin-bottom: 20px;'}
+              ${pageSize === 'A6' ? 'padding: 8px; margin-bottom: 10px; font-size: 10px;' : pageSize === 'A5' ? 'padding: 10px; margin-bottom: 15px; font-size: 11px;' : 'padding: 15px; margin-bottom: 20px;'}
             }
             .order-page .details-section {
-              ${pageSize === 'A5' ? 'padding: 10px; font-size: 11px;' : 'padding: 15px;'}
+              ${pageSize === 'A6' ? 'padding: 8px; font-size: 10px;' : pageSize === 'A5' ? 'padding: 10px; font-size: 11px;' : 'padding: 15px;'}
             }
           </style>
         </head>
@@ -1130,12 +1311,12 @@ function AdminOrdersContent() {
     }, 250);
   };
 
-  const handlePrintSelected = (pageSize: 'A4' | 'A5' = 'A4') => {
+  const handlePrintSelected = (pageSize: 'A4' | 'A5' | 'A6' = 'A4') => {
     const ordersToPrint = orders.filter(o => selectedOrders.includes(o.id));
     printOrders(ordersToPrint, pageSize);
   };
 
-  const handlePrintAll = (pageSize: 'A4' | 'A5' = 'A4') => {
+  const handlePrintAll = (pageSize: 'A4' | 'A5' | 'A6' = 'A4') => {
     printOrders(filteredOrders, pageSize);
   };
 
@@ -1358,16 +1539,16 @@ function AdminOrdersContent() {
                     borderBottom: '1px solid #f0f0f0',
                   }}
                   className="hover:bg-gray-50"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                  {t('admin.orders.export.selected')} ({selectedOrders.length})
-                </button>
-              )}
-              <button
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              {t('admin.orders.export.selected')} ({selectedOrders.length})
+            </button>
+          )}
+          <button
                 onClick={() => {
                   handleExportAll();
                   const dropdown = document.getElementById('export-dropdown');
@@ -1409,34 +1590,34 @@ function AdminOrdersContent() {
                   dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
                 }
               }}
-              disabled={filteredOrders.length === 0}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '12px 18px',
-                borderRadius: '10px',
+            disabled={filteredOrders.length === 0}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 18px',
+              borderRadius: '10px',
                 border: '2px solid #FF9800',
-                backgroundColor: '#fff',
+              backgroundColor: '#fff',
                 color: '#FF9800',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: filteredOrders.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: filteredOrders.length === 0 ? 0.5 : 1,
-                transition: 'all 0.2s ease',
-              }}
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: filteredOrders.length === 0 ? 'not-allowed' : 'pointer',
+              opacity: filteredOrders.length === 0 ? 0.5 : 1,
+              transition: 'all 0.2s ease',
+            }}
               className="hover:bg-orange-50"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="6 9 6 2 18 2 18 9" />
                 <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                 <polyline points="6 14 12 20 18 14" />
-              </svg>
+            </svg>
               Print
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="6 9 12 15 18 9" />
               </svg>
-            </button>
+          </button>
             <div
               id="print-dropdown"
               style={{
@@ -1509,7 +1690,6 @@ function AdminOrdersContent() {
                       cursor: 'pointer',
                       textAlign: 'left',
                       transition: 'background-color 0.2s ease',
-                      borderBottom: '1px solid #f0f0f0',
                     }}
                     className="hover:bg-gray-50"
                   >
@@ -1518,6 +1698,36 @@ function AdminOrdersContent() {
                       <line x1="9" y1="3" x2="9" y2="21" />
                     </svg>
                     Print Selected - A5
+                  </button>
+                  <button
+                    onClick={() => {
+                      handlePrintSelected('A6');
+                      const dropdown = document.getElementById('print-dropdown');
+                      if (dropdown) dropdown.style.display = 'none';
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '10px 16px',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#1a1a2e',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background-color 0.2s ease',
+                      borderBottom: '1px solid #f0f0f0',
+                    }}
+                    className="hover:bg-gray-50"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <line x1="9" y1="3" x2="9" y2="21" />
+                    </svg>
+                    Print Selected - A6
                   </button>
                 </>
               )}
@@ -1584,6 +1794,36 @@ function AdminOrdersContent() {
                 </svg>
                 Print All - A5
               </button>
+              <button
+                onClick={() => {
+                  handlePrintAll('A6');
+                  const dropdown = document.getElementById('print-dropdown');
+                  if (dropdown) dropdown.style.display = 'none';
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px 16px',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#1a1a2e',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'background-color 0.2s ease',
+                }}
+                className="hover:bg-gray-50"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <polyline points="6 14 12 20 18 14" />
+                </svg>
+                Print All - A6
+              </button>
             </div>
           </div>
           
@@ -1637,8 +1877,12 @@ function AdminOrdersContent() {
           padding: '16px',
           color: '#fff',
         }}>
-          <p style={{ fontSize: '12px', opacity: 0.7, marginBottom: '6px' }}>{t('admin.orders.stats.total')}</p>
-          <p style={{ fontSize: '26px', fontWeight: '700' }}>{stats.total}</p>
+          <p style={{ fontSize: '12px', opacity: 0.7, marginBottom: '8px' }}>{t('admin.orders.stats.total')}</p>
+          <p style={{ fontSize: '26px', fontWeight: '700', marginBottom: '12px' }}>{stats.total}</p>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
+            <p style={{ fontSize: '11px', opacity: 0.8, marginBottom: '4px' }}>Last 24 Hours</p>
+            <p style={{ fontSize: '20px', fontWeight: '700' }}>{stats.last24Hours}</p>
+          </div>
         </div>
 
         {/* Revenue */}
@@ -1990,7 +2234,7 @@ function AdminOrdersContent() {
                         <p style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a2e' }}>
                           #{order.id}
                         </p>
-                        <p style={{ fontSize: '12px', color: '#999' }}>{order.date}</p>
+                        <p style={{ fontSize: '12px', color: '#999' }}>{formatDate(order.date)}</p>
                       </div>
                     </div>
                   </td>
@@ -2110,8 +2354,8 @@ function AdminOrdersContent() {
                   </td>
                   <td style={{ padding: '16px' }}>
                     <div>
-                      <p style={{ fontSize: '13px', color: '#666', marginBottom: '2px' }}>{order.date}</p>
-                      <p style={{ fontSize: '12px', color: '#999' }}>{order.time}</p>
+                      <p style={{ fontSize: '13px', color: '#666', marginBottom: '2px' }}>{formatDate(order.date)}</p>
+                      <p style={{ fontSize: '12px', color: '#999' }}>{formatTime(order.time)}</p>
                     </div>
                   </td>
                   <td style={{ padding: '16px', textAlign: 'center' }}>
@@ -2291,7 +2535,7 @@ function AdminOrdersContent() {
                   {/* Order ID and Date */}
                   <div>
                     <p style={{ fontSize: '15px', fontWeight: '600', color: '#1a1a2e' }}>#{order.id}</p>
-                    <p style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>{order.date} • {order.time}</p>
+                    <p style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>{formatDate(order.date)} • {formatTime(order.time)}</p>
                   </div>
                 </div>
                 <div style={{ position: 'relative', zIndex: openStatusDropdown === order.id ? 1001 : 'auto' }}>

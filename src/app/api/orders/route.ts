@@ -27,7 +27,12 @@ export async function GET() {
         created_at,
         updated_at
       FROM orders
-      ORDER BY date DESC, time DESC
+      ORDER BY 
+        CASE 
+          WHEN id LIKE '#QE%' THEN CAST(SUBSTRING(id FROM 4) AS INTEGER)
+          ELSE 0
+        END DESC,
+        created_at DESC
     `;
 
     // Transform database rows to Order format

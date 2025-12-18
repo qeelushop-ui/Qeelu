@@ -1581,9 +1581,16 @@ function AdminProductsContent() {
         description: productData.description || editingProduct.description,
         features: productData.features || editingProduct.features,
       } as Product;
-      updateProduct(updatedProduct);
-      showToast('Changes Saved', 'success');
-      setEditingProduct(null);
+      
+      const result = await updateProduct(updatedProduct);
+      
+      if (result.success) {
+        showToast('✅ Changes Saved Successfully!', 'success');
+        setEditingProduct(null);
+      } else {
+        showToast(result.error || 'Failed to update product', 'error');
+        // Don't close modal so user can fix the issue
+      }
     } else {
       // For new product, use addProduct with current language for auto-translation
       const result = await addProduct(productData as Partial<Product>, currentLang);

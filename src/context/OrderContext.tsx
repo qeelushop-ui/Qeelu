@@ -41,6 +41,7 @@ interface OrderContextType {
     cancelledAmount: number;
     totalRevenue: number;
     todayOrders: number;
+    last24Hours: number;
   };
   loading: boolean;
 }
@@ -245,6 +246,32 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const getOrderStats = () => {
     const today = getTodayDate();
     
+    // Calculate orders from today's midnight (12:00 AM) to now
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    
+    const last24HoursOrders = orders.filter(order => {
+      try {
+        // Handle ISO format dates (2025-12-17T19:00:00.000Z) or simple format (2025-12-17)
+        const datePart = order.date.split('T')[0].split(' ')[0];
+        const [year, month, day] = datePart.split('-').map(Number);
+        
+        // Parse time (handle HH:MM or HH:MM:SS format)
+        const timePart = order.time.split(':');
+        const hours = parseInt(timePart[0], 10) || 0;
+        const minutes = parseInt(timePart[1], 10) || 0;
+        
+        // Create order datetime in local timezone
+        const orderDateTime = new Date(year, month - 1, day, hours, minutes, 0, 0);
+        
+        // Check if order is from today (after midnight 12:00 AM of today, before next midnight)
+        return orderDateTime >= todayStart && orderDateTime <= now;
+      } catch (e) {
+        // If date parsing fails, check by date string (fallback)
+        return order.date === today || order.date.startsWith(today);
+      }
+    });
+    
     return {
       total: orders.length,
       pending: orders.filter(o => o.status === 'pending').length,
@@ -258,6 +285,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       cancelledAmount: orders.filter(o => o.status === 'cancelled').reduce((sum, o) => sum + o.total, 0),
       totalRevenue: orders.filter(o => o.status !== 'cancelled').reduce((sum, o) => sum + o.total, 0),
       todayOrders: orders.filter(o => o.date === today).length,
+      last24Hours: last24HoursOrders.length,
     };
   };
 

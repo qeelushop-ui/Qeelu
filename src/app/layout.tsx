@@ -50,7 +50,7 @@ export default function RootLayout({
             `,
           }}
         />
-        
+
         {/* TikTok Pixel Code */}
         <Script
           id="tiktok-pixel"
@@ -65,7 +65,7 @@ export default function RootLayout({
             `,
           }}
         />
-        
+
         {/* Meta Pixel Code */}
         <Script
           id="meta-pixel"
@@ -87,11 +87,11 @@ export default function RootLayout({
         />
 
         {/* TikTok Pixel Code */}
-<Script
-  id="tiktok-pixel-new"
-  strategy="afterInteractive"
-  dangerouslySetInnerHTML={{
-    __html: `
+        <Script
+          id="tiktok-pixel-new"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
       !function (w, d, t) {
         w.TiktokAnalyticsObject=t;
         var ttq=w[t]=w[t]||[];
@@ -131,15 +131,15 @@ export default function RootLayout({
         ttq.page();
       }(window, document, 'ttq');
     `,
-  }}
-/>
+          }}
+        />
 
         {/* TikTok Pixel Code */}
-<Script
-  id="tiktok-pixel"
-  strategy="afterInteractive"
-  dangerouslySetInnerHTML={{
-    __html: `
+        <Script
+          id="tiktok-pixel"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
       !function (w, d, t) {
         w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
         ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],
@@ -160,13 +160,13 @@ export default function RootLayout({
         ttq.page();
       }(window, document, 'ttq');
     `,
-  }}
-/>
+          }}
+        />
 
         {/* TikTok Pixel Code */}
-<script
-  dangerouslySetInnerHTML={{
-    __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
       !function (w, d, t) {
         w.TiktokAnalyticsObject = t;
         var ttq = w[t] = w[t] || [];
@@ -218,14 +218,14 @@ export default function RootLayout({
         ttq.page();
       }(window, document, 'ttq');
     `,
-  }}
-/>
+          }}
+        />
         {/* TikTok Pixel Code */}
-<Script
-  id="tiktok-pixel"
-  strategy="afterInteractive"
-  dangerouslySetInnerHTML={{
-    __html: `
+        <Script
+          id="tiktok-pixel"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
       !function (w, d, t) {
         w.TiktokAnalyticsObject=t;
         var ttq=w[t]=w[t]||[];
@@ -258,33 +258,33 @@ export default function RootLayout({
         ttq.page();
       }(window, document, 'ttq');
     `,
-  }}
-/>
+          }}
+        />
 
-{/* Meta Pixel – Additional Pixel Init */}
-<Script
-  id="meta-pixel-25427020606950381"
-  strategy="afterInteractive"
-  dangerouslySetInnerHTML={{
-    __html: `
+        {/* Meta Pixel – Additional Pixel Init */}
+        <Script
+          id="meta-pixel-25427020606950381"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
       if (window.fbq) {
         fbq('init', '25427020606950381');
         fbq('track', 'PageView');
       }
     `,
-  }}
-/>
+          }}
+        />
 
         <noscript>
-          <img 
-            height="1" 
-            width="1" 
+          <img
+            height="1"
+            width="1"
             style={{ display: 'none' }}
             src="https://www.facebook.com/tr?id=867472615779096&ev=PageView&noscript=1"
             alt=""
           />
         </noscript>
-        
+
         <I18nProvider>
           <ProductProvider>
             <OrderProvider>
