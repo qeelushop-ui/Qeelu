@@ -93,14 +93,14 @@ export default function Footer() {
               <p>Muscat, Oman</p>
               <p style={{ marginTop: '8px' }}>
                 <a 
-                  href="https://wa.me/96891434609" 
+                  href="https://wa.me/96898115740" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ color: '#25d366', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                   className="hover:underline"
                 >
                   <span>📱</span>
-                  <span>+968 91434609</span>
+                  <span>+968 98115740</span>
                 </a>
               </p>
             </address>
