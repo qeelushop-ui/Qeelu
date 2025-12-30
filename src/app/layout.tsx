@@ -34,6 +34,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased bg-[#f5f5f5]">
+        {/* Google Analytics (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-T18W2BEVTQ"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-T18W2BEVTQ');
+            `,
+          }}
+        />
+
         <Script
           id="snap-pixel"
           strategy="afterInteractive"
