@@ -314,7 +314,17 @@ export default function ProductPage({ params }: ProductPageProps) {
     } catch (error) {
       console.error('Error saving recent orders:', error);
     }
-
+// Meta Pixel - Track Purchase Event
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'Purchase', {
+        value: totalPrice,
+        currency: 'OMR',
+        content_name: productTitle,
+        content_type: 'product',
+        content_ids: [product.id.toString()],
+        num_items: quantity,
+      });
+    }
     // Show success message and scroll to top
     setOrderSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
