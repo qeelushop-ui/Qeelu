@@ -8,7 +8,7 @@ import { OrderProvider } from "@/context/OrderContext";
 export const metadata: Metadata = {
   title: "Zamin Store Oman - Online Shopping with Free Delivery | Electronics, Watches & Gadgets",
   description: "Zamin Store is Oman's trusted online store offering smartphones, tablets, watches, accessories, and more with free delivery and cash on delivery. Shop premium products at best prices in Oman.",
-  keywords: "Qeelu Oman, Qeelu Online Shopping, Oman Online Store, Electronics Oman, Smartwatches Oman, Tablets Oman, Free delivery Oman, Cash on delivery Oman, Best deals Oman, Mobile accessories Oman, iPads Oman, Gadgets Oman",
+  keywords: "Zamin Store Oman, Zamin Store Online Shopping, Oman Online Store, Electronics Oman, Smartwatches Oman, Tablets Oman, Free delivery Oman, Cash on delivery Oman, Best deals Oman, Mobile accessories Oman, iPads Oman, Gadgets Oman",
 icons: {
     icon: [
       { url: '/zamin-favicon-32.png', sizes: '32x32', type: 'image/png' },
