@@ -73,9 +73,9 @@ export default function Header() {
                 </span>
               </>
             ) : (
-              <>
-                
-                  src="https://flagcdn.com/w40/sa.png"
+  <>
+    <Image
+      src="https://flagcdn.com/w40/sa.png"
                   alt="Arabic"
                   width={24}
                   height={16}
