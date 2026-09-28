@@ -9,14 +9,14 @@ export const metadata: Metadata = {
   title: "Zamin Store Oman - Online Shopping with Free Delivery | Electronics, Watches & Gadgets",
   description: "Zamin Store is Oman's trusted online store offering smartphones, tablets, watches, accessories, and more with free delivery and cash on delivery. Shop premium products at best prices in Oman.",
   keywords: "Qeelu Oman, Qeelu Online Shopping, Oman Online Store, Electronics Oman, Smartwatches Oman, Tablets Oman, Free delivery Oman, Cash on delivery Oman, Best deals Oman, Mobile accessories Oman, iPads Oman, Gadgets Oman",
-  icons: {
+icons: {
     icon: [
-      { url: '/zamin-favicon-512.png', sizes: '32x32', type: 'image/png' },
-      { url: '/zamin-favicon-512.png', sizes: '16x16', type: 'image/png' },
+      { url: '/zamin-favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/zamin-favicon-32.png', sizes: '16x16', type: 'image/png' },
     ],
-    shortcut: '/zamin-favicon-512.png',
+    shortcut: '/zamin-favicon-32.png',
     apple: [
-      { url: '/zamin-favicon-512.png', sizes: '180x180', type: 'image/png' },
+      { url: '/zamin-favicon-32.png', sizes: '180x180', type: 'image/png' },
     ],
   },
  openGraph: {
