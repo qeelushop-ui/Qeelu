@@ -98,7 +98,7 @@ export default function Header() {
   alt="Zamin Store Logo"
   width={220}
   height={90}
-  style={{ width: 'auto', height: '90px' }}
+  style={{ width: 'auto', height: '70px' }}
   priority
             />
           </Link>
