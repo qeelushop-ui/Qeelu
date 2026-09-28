@@ -94,7 +94,7 @@ export default function Header() {
             className="absolute left-1/2 transform -translate-x-1/2"
           >
             <Image
-              src="/zamin-logo-1-badge-hires.png"
+              src="/zamin-logo-1-badge.png"
   alt="Zamin Store Logo"
   width={220}
   height={90}
