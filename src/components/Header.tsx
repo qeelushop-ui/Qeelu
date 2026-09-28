@@ -74,7 +74,7 @@ export default function Header() {
               </>
             ) : (
               <>
-                <Image
+                
                   src="https://flagcdn.com/w40/sa.png"
                   alt="Arabic"
                   width={24}
@@ -94,12 +94,12 @@ export default function Header() {
             className="absolute left-1/2 transform -translate-x-1/2"
           >
             <Image
-              src="/Qeelu.png"
-              alt="Qeelu Logo"
-              width={220}
-              height={90}
-              style={{ width: 'auto', height: '90px' }}
-              priority
+              src="/zamin-logo-1-badge-hires.png"
+  alt="Zamin Store Logo"
+  width={220}
+  height={90}
+  style={{ width: 'auto', height: '90px' }}
+  priority
             />
           </Link>
 
