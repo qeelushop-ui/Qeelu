@@ -11,18 +11,18 @@ export const metadata: Metadata = {
   keywords: "Qeelu Oman, Qeelu Online Shopping, Oman Online Store, Electronics Oman, Smartwatches Oman, Tablets Oman, Free delivery Oman, Cash on delivery Oman, Best deals Oman, Mobile accessories Oman, iPads Oman, Gadgets Oman",
   icons: {
     icon: [
-      { url: '/Qeelu-white.png', sizes: '32x32', type: 'image/png' },
-      { url: '/Qeelu-white.png', sizes: '16x16', type: 'image/png' },
+      { url: '/zamin-favicon-512.png', sizes: '32x32', type: 'image/png' },
+      { url: '/zamin-favicon-512.png', sizes: '16x16', type: 'image/png' },
     ],
-    shortcut: '/Qeelu-white.png',
+    shortcut: '/zamin-favicon-512.png',
     apple: [
-      { url: '/Qeelu-white.png', sizes: '180x180', type: 'image/png' },
+      { url: '/zamin-favicon-512.png', sizes: '180x180', type: 'image/png' },
     ],
   },
-  openGraph: {
-    title: "Qeelu Oman - Online Shopping with Free Delivery",
-    description: "Qeelu is Oman's trusted online store offering smartphones, tablets, watches, accessories, and more with free delivery and cash on delivery.",
-    images: ['/Qeelu-white.png'],
+ openGraph: {
+    title: "Zamin Store Oman - Online Shopping with Free Delivery",
+    description: "Zamin Store is Oman's trusted online store offering smartphones, tablets, watches, accessories, and more with free delivery and cash on delivery.",
+    images: ['/zamin-favicon-512.png'],
   },
 };
 
